@@ -1,62 +1,183 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Dono</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="admin.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Dono</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.caixa{max-width:520px;margin:30px auto;padding:20px;background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.caixa input,.caixa textarea{width:100%;padding:10px;margin:6px 0 12px;border:1px solid #ddd;border-radius:8px;font-size:1rem}
+.caixa input[type=checkbox]{width:auto}
+.linha{display:flex;gap:10px}.linha>div{flex:1}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
+.item button{margin-left:6px;padding:6px 10px;border:none;border-radius:8px;cursor:pointer}
+.msg{text-align:center;margin:10px 0;font-weight:600}
+.esc{display:none !important}
+</style>
 </head>
 <body>
-  <header class="topo">
-    <h1>🍦 Painel do Dono</h1>
-    <button class="botao escondido" id="btnSair">Sair</button>
-  </header>
+<header class="topo">
+  <h1>🍦 Painel do Dono</h1>
+  <button class="botao esc" id="btnSair" type="button">Sair</button>
+</header>
 
-  <div class="caixa" id="telaLogin">
-    <h2>Entrar</h2>
-    <label>E-mail</label>
-    <input type="email" id="email">
-    <label>Senha</label>
-    <input type="password" id="senha">
-    <button class="botao" id="btnEntrar">Entrar</button>
-    <p class="msg" id="msgLogin"></p>
-  </div>
+<div class="caixa" id="telaLogin">
+  <h2>Entrar</h2>
+  <label>E-mail</label>
+  <input type="email" id="email">
+  <label>Senha</label>
+  <input type="password" id="senha">
+  <button class="botao" id="btnEntrar" type="button">Entrar</button>
+  <p class="msg" id="msgLogin"></p>
+</div>
 
-  <div id="telaPainel" class="escondido">
-    <div class="caixa">
-      <h2 id="tituloForm">Novo sabor</h2>
-      <input type="hidden" id="idSabor">
-      <label>Nome</label>
-      <input type="text" id="nome">
-      <label>Descrição</label>
-      <textarea id="descricao" rows="2"></textarea>
-      <div class="linha">
-        <div><label>Preço (R$)</label><input type="number" step="0.01" id="preco"></div>
-        <div><label>Custo (R$)</label><input type="number" step="0.01" id="custo"></div>
-      </div>
-      <label>Código de barras</label>
-      <input type="text" id="codigo">
-      <label>Categoria</label>
-      <input type="text" id="categoria" value="Sorvete">
-      <label>Foto</label>
-      <input type="file" id="foto" accept="image/*">
-      <label><input type="checkbox" id="destaque"> Destaque</label><br>
-      <label><input type="checkbox" id="disponivel" checked> Disponível</label>
-      <br><br>
-      <button class="botao" id="btnSalvar">Salvar</button>
-      <button class="botao cinza escondido" id="btnCancelar">Cancelar edição</button>
-      <p class="msg" id="msgForm"></p>
+<div id="telaPainel" class="esc">
+  <div class="caixa">
+    <h2 id="tituloForm">Novo sabor</h2>
+    <input type="hidden" id="idSabor">
+    <label>Nome</label>
+    <input type="text" id="nome">
+    <label>Descrição</label>
+    <textarea id="descricao" rows="2"></textarea>
+    <div class="linha">
+      <div><label>Preço (R$)</label><input type="number" step="0.01" id="preco"></div>
+      <div><label>Custo (R$)</label><input type="number" step="0.01" id="custo"></div>
     </div>
-
-    <div class="caixa">
-      <h2>Sabores cadastrados</h2>
-      <div id="listaAdmin"></div>
-    </div>
+    <label>Código de barras</label>
+    <input type="text" id="codigo">
+    <label>Categoria</label>
+    <input type="text" id="categoria" value="Sorvete">
+    <label>Foto</label>
+    <input type="file" id="foto" accept="image/*">
+    <label><input type="checkbox" id="destaque"> Destaque</label><br>
+    <label><input type="checkbox" id="disponivel" checked> Disponível</label>
+    <br><br>
+    <button class="botao" id="btnSalvar" type="button">Salvar</button>
+    <button class="botao esc" id="btnCancelar" type="button" style="background:#999">Cancelar edição</button>
+    <p class="msg" id="msgForm"></p>
   </div>
+  <div class="caixa">
+    <h2>Sabores cadastrados</h2>
+    <div id="listaAdmin"></div>
+  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+function $(id){return document.getElementById(id);}
+window.onerror=function(m){alert("ERRO: "+m);};
+
+async function mostrarPainel(){
+  var s=await db.auth.getSession();
+  if(!s.data.session){return;}
+  $("msgLogin").textContent="Verificando permissão de dono...";
+  var p=await db.from("perfis").select("papel").eq("id",s.data.session.user.id).maybeSingle();
+  if(p.error){$("msgLogin").textContent="Erro ao ler perfil: "+p.error.message;return;}
+  if(!p.data||p.data.papel!=="dono"){
+    $("msgLogin").textContent="O e-mail "+s.data.session.user.email+" não é dono (papel: "+(p.data?p.data.papel:"sem perfil")+"). Entre com o e-mail do dono.";
+    await db.auth.signOut();
+    return;
+  }
+  $("telaLogin").classList.add("esc");
+  $("telaPainel").classList.remove("esc");
+  $("btnSair").classList.remove("esc");
+  listar();
+}
+
+async function entrar(){
+  $("msgLogin").textContent="Entrando...";
+  var r=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("senha").value});
+  if(r.error){$("msgLogin").textContent="Erro: "+r.error.message;return;}
+  await mostrarPainel();
+}
+
+async function listar(){
+  var r=await db.from("sabores").select("*").order("nome");
+  var box=$("listaAdmin");box.innerHTML="";
+  if(r.error){box.textContent="Erro: "+r.error.message;return;}
+  if(r.data.length===0){box.textContent="Nenhum sabor ainda.";return;}
+  r.data.forEach(function(s){
+    var item=document.createElement("div");item.className="item";
+    var t=document.createElement("span");
+    t.textContent=s.nome+" - "+dinheiro(s.preco)+(s.destaque?" ⭐":"")+(s.disponivel?"":" (indisponível)");
+    var ed=document.createElement("button");ed.textContent="Editar";
+    ed.onclick=function(){editar(s);};
+    var del=document.createElement("button");del.textContent="Apagar";
+    del.onclick=async function(){
+      if(!confirm("Apagar "+s.nome+"?"))return;
+      await db.from("sabores").delete().eq("id",s.id);
+      listar();
+    };
+    var a=document.createElement("span");a.appendChild(ed);a.appendChild(del);
+    item.appendChild(t);item.appendChild(a);box.appendChild(item);
+  });
+}
+
+function editar(s){
+  $("tituloForm").textContent="Editando: "+s.nome;
+  $("idSabor").value=s.id;
+  $("nome").value=s.nome;
+  $("descricao").value=s.descricao||"";
+  $("preco").value=s.preco;
+  $("custo").value=s.custo||0;
+  $("categoria").value=s.categoria||"";
+  $("codigo").value=s.codigo_barras||"";
+  $("destaque").checked=!!s.destaque;
+  $("disponivel").checked=!!s.disponivel;
+  $("btnCancelar").classList.remove("esc");
+  window.scrollTo(0,0);
+}
+
+function limpar(){
+  $("tituloForm").textContent="Novo sabor";
+  $("idSabor").value="";$("nome").value="";$("descricao").value="";
+  $("preco").value="";$("custo").value="";$("categoria").value="Sorvete";
+  $("codigo").value="";$("foto").value="";
+  $("destaque").checked=false;$("disponivel").checked=true;
+  $("btnCancelar").classList.add("esc");
+}
+
+async function salvar(){
+  $("msgForm").textContent="Salvando...";
+  var d={
+    nome:$("nome").value.trim(),
+    descricao:$("descricao").value.trim(),
+    preco:Number($("preco").value),
+    custo:Number($("custo").value||0),
+    categoria:$("categoria").value.trim(),
+    codigo_barras:$("codigo").value.trim()||null,
+    destaque:$("destaque").checked,
+    disponivel:$("disponivel").checked
+  };
+  if(!d.nome||!d.preco){$("msgForm").textContent="Preencha nome e preço.";return;}
+  var f=$("foto").files[0];
+  if(f){
+    var ext=f.name.split(".").pop().toLowerCase();
+    var cam=Date.now()+"."+ext;
+    var up=await db.storage.from("fotos").upload(cam,f);
+    if(up.error){$("msgForm").textContent="Erro na foto: "+up.error.message;return;}
+    d.foto_url=db.storage.from("fotos").getPublicUrl(cam).data.publicUrl;
+  }
+  var id=$("idSabor").value;
+  var r=id?await db.from("sabores").update(d).eq("id",id).select():await db.from("sabores").insert(d).select();
+  if(r.error){$("msgForm").textContent="Erro: "+r.error.message;return;}
+  if(!r.data||r.data.length===0){$("msgForm").textContent="O banco não salvou (sem permissão de dono).";return;}
+  $("msgForm").textContent="Salvo!";
+  limpar();listar();
+}
+
+$("btnEntrar").addEventListener("click",function(){
+  entrar().catch(function(e){$("msgLogin").textContent="Erro: "+e.message;});
+});
+$("btnSair").addEventListener("click",async function(){await db.auth.signOut();location.reload();});
+$("btnCancelar").addEventListener("click",limpar);
+$("btnSalvar").addEventListener("click",function(){
+  salvar().catch(function(e){$("msgForm").textContent="Erro: "+e.message;});
+});
+
+mostrarPainel().catch(function(e){$("msgLogin").textContent="Erro: "+e.message;});
+</script>
 </body>
 </html>
