@@ -1,14 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorveteria</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>ensinamentos</h1>
-  <input type="text" placeholder='Digite aqui "ok" para iniciar'>
-  <button>Enviar</button>
-</body>
-</html>
- 
+
+  <header class="topo">
+    <h1>🍦 Nome da Sorveteria</h1>
+    <nav>
+      <a href="#sabores">Sabores</a>
+      <a href="#contato">Contato</a>
+    </nav>
+  </header>
+
+  <section class="banner">
+    <h2>O sorvete mais cremoso da cidade</h2>
+    <p>Feito todo dia, com ingredientes frescos e muito carinho.</p>
+    <a href="#sabores" class="botao">Ver sabores</a>
+  </section>
+
+  <section id="sabores" class="secao">
+    <h2>Nossos Sabores</h2>
+    <div id="filtros" class="filtros"></div>
+    <div id="lista" class="cards">
+      <p class="aviso">Carregando sabores...</p>
+    </div>
+  </section>
+
+  <section id="contato" class="secao">
+    <h2>Contato</h2>
+    <p class="aviso">📍 Seu endereço aqui<br>🕒 Horário de funcionamento<br>📱 Seu telefone</p>
+  </section>
+
+  <footer>
+    <p>© 2026 Nome da Sorveteria</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+    let sabores = [];
+    let categoriaAtual = "Todos";
+    const jaVisto = new Set();
+
+    async function carregar() {
+      const { data, error } = await db
+        .from("sabores")
+        .select("*")
+        .order("destaque", { ascending: false })
+        .order("nome");
+
+      const lista = document.getElementById("lista");
+
+      if (error) {
+        lista.innerHTML = '<p class="aviso">Não foi possível carregar os sabores.</p>';
+        console.error(error);
+        return;
+      }
+
+      sabores = data;
+      montarFiltros();
+      mostrar();
+    }
+
+    function montarFiltros() {
+      const categorias = ["Todos", ...new Set(sabores.map(s => s.categoria).filter(Boolean))];
+      const box = document.getElementById("filtros");
+      box.innerHTML = "";
+
+      categorias.forEach(cat => {
+        const b = document.createElement("button");
+        b.textContent = cat;
+        if (cat === categoriaAtual) b.classList.add("ativo");
+        b.onclick = () => {
+          categoriaAtual = cat;
+          montarFiltros();
+          mostrar();
+        };
+        box.appendChild(b);
+      });
+    }
+
+    function mostrar() {
+      const lista = document.getElementById("lista");
+      const itens = sabores.filter(
+        s => categoriaAtual === "Todos" || s.categoria === categoriaAtual
+      );
+
+      if (itens.length === 0) {
+        lista.innerHTML = '<p class="aviso">Nenhum sabor cadastrado ainda.</p>';
+        return;
+      }
+
+      lista.innerHTML = "";
+
+      itens.forEach(s => {
+        const card = document.createElement("div");
+        card.className = "card" + (s.disponivel ? "" : " esgotado");
+        card.dataset.id = s.id;
+
+        const imagem = s.foto_url
+          ? `<img src="${s.foto_url}" alt="">`
+          : `<div class="sem-foto">🍨</div>`;
+
+        let selo = "";
+        if (!s.disponivel) selo = '<span class="selo">Esgotado</span>';
+        else if (s.destaque) selo = '<span class="selo">⭐ Destaque</span>';
+
+        card.innerHTML = `
+          ${selo}
