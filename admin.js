@@ -1,9 +1,7 @@
-function $(id) { return document.getElementById(id); }
+function $(id) { return document.getElementById(id) || document.createElement("input"); }
 
-// Qualquer erro de JavaScript aparece escrito na tela
 window.onerror = function (msg) {
-  var alvo = $("msgForm") || $("msgLogin");
-  if (alvo) alvo.textContent = "ERRO NO CÓDIGO: " + msg;
+  alert("ERRO NO CÓDIGO: " + msg);
 };
 
 async function verificarSessao() {
