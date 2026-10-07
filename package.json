@@ -1,6 +1,0 @@
-{
-  "scripts": {
- "java": "node -e \"console.log('Bem vindo')\""
-    /
-  }
-}   
