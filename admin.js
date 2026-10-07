@@ -5,9 +5,9 @@ async function verificarSessao() {
   if (r.data.session) {
     const p = await db.from("perfis").select("papel").eq("id", r.data.session.user.id).single();
     if (p.data && p.data.papel === "dono") {
-      $("telaLogin").style.display = "none";
-      $("telaPainel").style.display = "block";
-      $("btnSair").style.display = "inline-block";
+           $("telaLogin").classList.add("escondido");
+      $("telaPainel").classList.remove("escondido");
+      $("btnSair").classList.remove("escondido");
       listar();
       return;
     }
