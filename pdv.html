@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caixa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pdv.css">
+</head>
+<body>
+  <header class="topo">
+    <h1>🍦 Caixa</h1>
+    <span id="quemEsta"></span>
+    <button class="botao escondido" id="btnSair">Sair</button>
+  </header>
+
+  <div class="pdv-login" id="telaLogin">
+    <h2>Entrar</h2>
+    <label>E-mail</label>
+    <input type="email" id="email">
+    <label>Senha</label>
+    <input type="password" id="senha">
+    <button class="botao" id="btnEntrar">Entrar</button>
+    <p class="pdv-msg" id="msgLogin"></p>
+  </div>
+
+  <div class="pdv escondido" id="telaPdv">
+    <div class="pdv-esq">
+      <input type="text" id="busca" placeholder="Bipe o código ou digite o nome (Enter)">
+      <p class="pdv-msg" id="msgBusca"></p>
+      <div class="grade" id="grade"></div>
+    </div>
+
+    <div class="pdv-dir">
+      <h2>Venda atual</h2>
+      <div id="itensVenda"></div>
+      <div class="pdv-total">Total: <span id="totalVenda">R$ 0,00</span></div>
+
+      <label>Forma de pagamento</label>
+      <select id="pagamento">
+        <option value="dinheiro">Dinheiro</option>
+        <option value="pix">Pix</option>
+        <option value="credito">Cartão de crédito</option>
+        <option value="debito">Cartão de débito</option>
+      </select>
+
+      <div id="boxRecebido">
+        <label>Valor recebido (R$)</label>
+        <input type="number" step="0.01" id="recebido">
+        <p class="pdv-msg" id="troco"></p>
+      </div>
+
+      <button class="botao" id="btnConcluir" style="width:100%">Concluir venda</button>
+      <button class="botao" id="btnLimpar" style="width:100%;margin-top:8px;background:#999">Cancelar venda</button>
+      <p class="pdv-msg" id="msgVenda"></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="pdv.js"></script>
+</body>
+</html>
