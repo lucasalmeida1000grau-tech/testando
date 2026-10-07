@@ -7,25 +7,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <header class="topo">
     <h1>🍦 Nome da Sorveteria</h1>
-    <nav>
-      <a href="#sabores">Sabores</a>
-      <a href="#contato">Contato</a>
-    </nav>
   </header>
 
-  <section class="banner">
-    <h2>O sorvete mais cremoso da cidade</h2>
-    <p>Feito todo dia, com ingredientes frescos e muito carinho.</p>
-    <a href="#sabores" class="botao">Ver sabores</a>
-  </section>
-
-  <section id="sabores" class="secao">
+  <section class="secao">
     <h2>Nossos Sabores</h2>
-    <div id="filtros" class="filtros"></div>
     <div id="lista" class="cards">
       <p class="aviso">Carregando sabores...</p>
     </div>
   </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
