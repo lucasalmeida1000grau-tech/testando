@@ -1,0 +1,10 @@
+.caixa { max-width: 520px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+.caixa input, .caixa textarea { width: 100%; padding: 10px; margin: 6px 0 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+.caixa input[type=checkbox] { width: auto; }
+.linha { display: flex; gap: 10px; }
+.linha > div { flex: 1; }
+.item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
+.item button { margin-left: 6px; padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; }
+.msg { text-align: center; margin: 10px 0; font-weight: 600; }
+.cinza { background: #999; }
+.escondido { display: none; }
