@@ -5,20 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Dono</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .caixa { max-width: 520px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
-    .caixa input, .caixa textarea, .caixa select { width: 100%; padding: 10px; margin: 6px 0 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
-    .linha { display: flex; gap: 10px; }
-    .linha > div { flex: 1; }
-    .item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
-    .item button { margin-left: 6px; padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; }
-    .msg { text-align: center; margin: 10px 0; font-weight: 600; }
-  </style>
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
   <header class="topo">
     <h1>🍦 Painel do Dono</h1>
-    <button class="botao" id="btnSair" style="display:none">Sair</button>
+    <button class="botao escondido" id="btnSair">Sair</button>
   </header>
 
   <div class="caixa" id="telaLogin">
@@ -31,7 +23,7 @@
     <p class="msg" id="msgLogin"></p>
   </div>
 
-  <div id="telaPainel" style="display:none">
+  <div id="telaPainel" class="escondido">
     <div class="caixa">
       <h2 id="tituloForm">Novo sabor</h2>
       <input type="hidden" id="idSabor">
@@ -46,4 +38,23 @@
       <label>Categoria</label>
       <input type="text" id="categoria" value="Sorvete">
       <label>Foto</label>
-      <input
+      <input type="file" id="foto" accept="image/*">
+      <label><input type="checkbox" id="destaque"> Destaque</label><br>
+      <label><input type="checkbox" id="disponivel" checked> Disponível</label>
+      <br><br>
+      <button class="botao" id="btnSalvar">Salvar</button>
+      <button class="botao cinza escondido" id="btnCancelar">Cancelar edição</button>
+      <p class="msg" id="msgForm"></p>
+    </div>
+
+    <div class="caixa">
+      <h2>Sabores cadastrados</h2>
+      <div id="listaAdmin"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
