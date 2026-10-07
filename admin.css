@@ -7,4 +7,4 @@
 .item button { margin-left: 6px; padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; }
 .msg { text-align: center; margin: 10px 0; font-weight: 600; }
 .cinza { background: #999; }
-.escondido { display: none; }
+.escondido { display: none !important; }
