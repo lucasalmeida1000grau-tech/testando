@@ -64,7 +64,7 @@ function limpar() {
 
 $("btnCancelar").onclick = limpar;
 
-$("btnSalvar").onclick = async function () {
+async function salvar() {
   $("msgForm").textContent = "Salvando...";
 
   const dados = {
@@ -96,17 +96,28 @@ $("btnSalvar").onclick = async function () {
 
   const id = $("idSabor").value;
   const r = id
-    ? await db.from("sabores").update(dados).eq("id", id)
-    : await db.from("sabores").insert(dados);
+    ? await db.from("sabores").update(dados).eq("id", id).select()
+    : await db.from("sabores").insert(dados).select();
 
   if (r.error) {
     $("msgForm").textContent = "Erro: " + r.error.message;
     return;
   }
 
+  if (!r.data || r.data.length === 0) {
+    $("msgForm").textContent = "O banco não salvou (usuário sem permissão de dono).";
+    return;
+  }
+
   $("msgForm").textContent = "Salvo!";
   limpar();
   listar();
+}
+
+$("btnSalvar").onclick = function () {
+  salvar().catch(function (e) {
+    $("msgForm").textContent = "Erro: " + e.message;
+  });
 };
 
 verificarSessao();
