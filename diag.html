@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico</title>
+</head>
+<body style="font-family:Arial;padding:20px">
+  <h2>Diagnóstico do admin</h2>
+  <pre id="r" style="white-space:pre-wrap">Conferindo...</pre>
+  <script>
+    function log(t) { document.getElementById("r").textContent += "\n" + t; }
+
+    async function ler(nome) {
+      var resp = await fetch(nome + "?v=" + Date.now(), { cache: "no-store" });
+      if (!resp.ok) { log("❌ " + nome + ": não encontrado (status " + resp.status + ")"); return null; }
+      return await resp.text();
+    }
+
+    async function conferir() {
+      document.getElementById("r").textContent = "";
+
+      var js = await ler("admin.js");
+      if (js) {
+        log(js.trim().endsWith("verificarSessao();")
+          ? "✅ admin.js está completo"
+          : "❌ admin.js está CORTADO. Termina em: " + js.trim().slice(-60));
+        log(js.indexOf("codigo_barras") > -1
+          ? "✅ admin.js tem o código de barras"
+          : "⚠️ admin.js é a versão antiga (sem código de barras)");
+      }
+
+      var html = await ler("admin.html");
+      if (html) {
+        log(html.trim().endsWith("</html>")
+          ? "✅ admin.html está completo"
+          : "❌ admin.html está CORTADO. Termina em: " + html.trim().slice(-60));
+        log(html.indexOf('id="codigo"') > -1
+          ? "✅ admin.html tem o campo código"
+          : "❌ admin.html NÃO tem o campo id=\"codigo\" (é isso que quebra os botões)");
+        log(html.indexOf('src="admin.js"') > -1
+          ? "✅ admin.html chama o admin.js"
+          : "❌ admin.html NÃO chama o
