@@ -1,6 +1,6 @@
 // ===== DADOS DA LOJA: troque aqui =====
 var LOJA = {
-  nome: "Nome da Sorveteria",
+  nome: "ice pan",
   endereco: "Rua Exemplo, 123 - São Paulo/SP",
   horario: "Todos os dias, das 12h às 22h",
   whatsapp: "5511999999999",
