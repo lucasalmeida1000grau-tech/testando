@@ -1,4 +1,4 @@
-// ===== DADOS DA LOJA: troque aqui =====
+// ===== DADOS PADRÃO DA LOJA (o dono pode mudar pelo site) =====
 var LOJA = {
   nome: "Nome da Sorveteria",
   endereco: "Rua Exemplo, 123 - São Paulo/SP",
@@ -8,16 +8,19 @@ var LOJA = {
   heroTitulo: "A vida é melhor com",
   heroDestaque: "sorvete",
   heroTexto: "Cremoso, saboroso e feito com ingredientes frescos. Escolha o seu e retire na loja.",
+  heroFoto: "",
   promoAtiva: true,
   promoTopo: "Oferta especial",
-  promoTitulo: "Compre 2 bolas, leve 3"
+  promoTitulo: "Compre 2 bolas, leve 3",
+  promoFoto: ""
 };
-// ======================================
+// ==============================================================
 
 var COLUNAS = "id,nome,descricao,preco,foto_url,categoria,destaque,disponivel";
 var sabores = [];
 var categoriaAtual = "Todos";
 var jaVisto = {};
+var DONO = false;
 
 function erroNaTela(t) {
   var l = document.getElementById("lista");
@@ -49,11 +52,17 @@ function preencherLoja() {
     h.appendChild(s);
   }
 
+  var f = document.querySelector(".hero .foto");
+  if (f && LOJA.heroFoto) f.style.backgroundImage = 'url("' + LOJA.heroFoto + '")';
+
   var bp = document.getElementById("blocoPromo");
-  if (LOJA.promoAtiva && bp) {
-    bp.classList.remove("escondido");
+  if (bp) {
+    if (LOJA.promoAtiva) bp.classList.remove("escondido");
+    else bp.classList.add("escondido");
     txt("promoTopo", LOJA.promoTopo);
     txt("promoTitulo", LOJA.promoTitulo);
+    var pi = document.getElementById("promoImg");
+    if (pi && LOJA.promoFoto) { pi.src = LOJA.promoFoto; pi.style.display = ""; }
   }
 }
 
@@ -118,6 +127,9 @@ function criarCard(s) {
   box.appendChild(preco);
   box.appendChild(botao);
   card.appendChild(box);
+
+  if (DONO) card.appendChild(barraCard(s));
+
   observador.observe(card);
   return card;
 }
@@ -179,7 +191,10 @@ function mostrar() {
 }
 
 async function carregar() {
+  var c = await db.from("config_loja").select("dados").eq("id", 1).maybeSingle();
+  if (c.data && c.data.dados) Object.assign(LOJA, c.data.dados);
   preencherLoja();
+
   var r = await db.from("sabores").select(COLUNAS)
     .order("destaque", { ascending: false }).order("nome");
   if (r.error) { erroNaTela(r.error.message); return; }
