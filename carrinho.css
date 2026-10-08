@@ -6,7 +6,7 @@
 .painel h2 { margin-bottom: 14px; }
 .painel input, .painel select { width: 100%; padding: 10px; margin: 6px 0 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
 .linha-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid #eee; }
-.qtd button { width: 28px; height: 28px; border: none; border-radius: 50%; background: var(--cor-principal); color: #fff; font-size: 1rem; cursor: pointer; }
+.qtd button { width: 28px; height: 28px; border: none; border-radius: 50%; background: var(--cor-principal); color: var(--sobre-cor); font-size: 1rem; cursor: pointer; }
 .qtd b { margin: 0 8px; }
 .total { font-size: 1.3rem; font-weight: 700; margin: 14px 0; text-align: right; }
 .fechar { float: right; background: none; border: none; font-size: 1.6rem; cursor: pointer; }
