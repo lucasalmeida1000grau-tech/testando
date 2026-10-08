@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <style>
 .caixa{max-width:520px;margin:30px auto;padding:20px;background:#fff;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.caixa.larga{max-width:980px}
 .caixa input,.caixa textarea{width:100%;padding:10px;margin:6px 0 12px;border:1px solid #ddd;border-radius:8px;font-size:1rem}
 .caixa input[type=checkbox]{width:auto}
 .linha{display:flex;gap:10px}.linha>div{flex:1}
@@ -14,6 +15,41 @@
 .item button{margin-left:6px;padding:6px 10px;border:none;border-radius:8px;cursor:pointer}
 .msg{text-align:center;margin:10px 0;font-weight:600}
 .esc{display:none !important}
+
+.abas{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:16px 16px 0}
+.abas button{padding:8px 24px;border:2px solid var(--cor-principal);background:transparent;color:var(--cor-principal);border-radius:999px;font:600 .95rem var(--fonte);cursor:pointer}
+.abas button.ativo{background:var(--cor-principal);color:var(--sobre-cor)}
+.barra{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.barra select{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font:inherit}
+.barra .botao{padding:8px 18px}
+.caixa h2,.caixa h3{margin:14px 0 8px}
+.grade-num{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0 14px}
+.num{background:var(--creme);border:2px solid transparent;border-radius:14px;padding:12px;text-align:center;font-family:inherit}
+.num b{display:block;font-size:1.35rem;color:var(--cor-escura)}
+.num span{font-size:.8rem;color:var(--cor-suave)}
+button.num{cursor:pointer}
+.num.sel{border-color:var(--cor-principal)}
+.num.alerta{background:#ffe3e3}.num.alerta b{color:#b00020}
+.destaque-top{background:var(--creme);border-radius:14px;padding:14px;margin:8px 0;font-size:1.05rem}
+.destaque-top b{color:var(--cor-escura)}
+.rank{width:100%;border-collapse:collapse;font-size:.92rem}
+.rank th,.rank td{padding:6px 4px;border-bottom:1px solid #eee;text-align:left}
+.rank th:nth-child(n+2),.rank td:nth-child(n+2){text-align:right}
+.pa{border:1px solid var(--borda);border-radius:12px;padding:12px;margin:10px 0}
+.pa.atrasado{border-color:#d00;background:#fff5f5}
+.pa-topo{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:700}
+.pa p{margin:3px 0}
+.pa ul{margin:6px 0 6px 18px}
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.75rem;font-weight:700;background:var(--creme);color:var(--cor-escura)}
+.tag.atrasado{background:#d00;color:#fff}
+.tag.novo{background:#ffe3a3;color:#7a4b00}
+.tag.cancelado{background:#eee;color:#777}
+.peq{font-size:.82rem;color:var(--cor-suave)}
+.cores{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+.cores button{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px #ccc;cursor:pointer}
+.cores button:hover{box-shadow:0 0 0 3px var(--cor-principal)}
+.seletor{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0}
+.seletor input[type=color]{width:70px;height:48px;padding:2px;margin:0;cursor:pointer}
 </style>
 </head>
 <body>
@@ -33,33 +69,103 @@
 </div>
 
 <div id="telaPainel" class="esc">
-  <div class="caixa">
-    <h2 id="tituloForm">Novo sabor</h2>
-    <input type="hidden" id="idSabor">
-    <label>Nome</label>
-    <input type="text" id="nome">
-    <label>Descrição</label>
-    <textarea id="descricao" rows="2"></textarea>
-    <div class="linha">
-      <div><label>Preço (R$)</label><input type="number" step="0.01" id="preco"></div>
-      <div><label>Custo (R$)</label><input type="number" step="0.01" id="custo"></div>
-    </div>
-    <label>Código de barras</label>
-    <input type="text" id="codigo">
-    <label>Categoria</label>
-    <input type="text" id="categoria" value="Sorvete">
-    <label>Foto</label>
-    <input type="file" id="foto" accept="image/*">
-    <label><input type="checkbox" id="destaque"> Destaque</label><br>
-    <label><input type="checkbox" id="disponivel" checked> Disponível</label>
-    <br><br>
-    <button class="botao" id="btnSalvar" type="button">Salvar</button>
-    <button class="botao esc" id="btnCancelar" type="button" style="background:#999">Cancelar edição</button>
-    <p class="msg" id="msgForm"></p>
+  <div class="abas">
+    <button type="button" id="abaBtnResumo" class="ativo">Resumo e pedidos</button>
+    <button type="button" id="abaBtnSabores">Sabores</button>
+    <button type="button" id="abaBtnCor">Aparência</button>
   </div>
-  <div class="caixa">
-    <h2>Sabores cadastrados</h2>
-    <div id="listaAdmin"></div>
+
+  <!-- ===== ABA: RESUMO ===== -->
+  <div id="abaResumo">
+    <div class="caixa larga">
+      <div class="barra">
+        <select id="selPeriodo">
+          <option value="hoje">Hoje</option>
+          <option value="7d">Últimos 7 dias</option>
+          <option value="30d">Últimos 30 dias</option>
+        </select>
+        <button class="botao" id="btnAtualizar" type="button">Atualizar</button>
+        <a class="botao contorno" href="pedido.html" style="padding:8px 18px">Tela dos funcionários</a>
+        <span class="peq" id="horaAtualizado"></span>
+      </div>
+      <p class="msg" id="msgResumo"></p>
+
+      <h3>Vendas</h3>
+      <div class="grade-num" id="gradeVendas"></div>
+
+      <h3>Mais vendidos</h3>
+      <div id="boxRank"></div>
+
+      <h3>Pedidos online (clique para ver a lista)</h3>
+      <div class="grade-num" id="gradeFila"></div>
+
+      <h3 id="tituloLista">Pedidos</h3>
+      <div id="listaPedidos"></div>
+    </div>
+
+    <div class="caixa larga">
+      <h3>Pedido atrasado</h3>
+      <p class="peq">Um pedido em andamento (novo, em preparo, pronto ou saiu para entrega) fica marcado como atrasado depois deste tempo. Vale também para a tela dos funcionários.</p>
+      <div class="barra">
+        <input type="number" id="limite" min="1" style="width:90px;margin:0"> minutos
+        <button class="botao" id="btnSalvarLimite" type="button">Salvar</button>
+        <span class="peq" id="msgLimite"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ABA: APARÊNCIA ===== -->
+  <div id="abaCor" class="esc">
+    <div class="caixa">
+      <h2>Cor do aplicativo</h2>
+      <p class="peq">A cor vale para o site, o caixa, a tela de pedidos e este painel. Mexa à vontade: só muda para os clientes depois de clicar em Salvar.</p>
+      <div class="seletor">
+        <input type="color" id="corEscolhida" value="#d6336c">
+        <b id="hexCor">#d6336c</b>
+      </div>
+      <p class="peq">Cores prontas:</p>
+      <div class="cores" id="coresProntas"></div>
+      <p class="peq">Exemplo de como fica:</p>
+      <div class="seletor">
+        <span class="botao" style="cursor:default">Adicionar ao pedido</span>
+        <span class="tag">Em preparo</span>
+      </div>
+      <button class="botao" id="btnSalvarCor" type="button">Salvar cor</button>
+      <button class="botao contorno" id="btnCorPadrao" type="button">Voltar ao padrão</button>
+      <p class="msg" id="msgCor"></p>
+    </div>
+  </div>
+
+  <!-- ===== ABA: SABORES ===== -->
+  <div id="abaSabores" class="esc">
+    <div class="caixa">
+      <h2 id="tituloForm">Novo sabor</h2>
+      <input type="hidden" id="idSabor">
+      <label>Nome</label>
+      <input type="text" id="nome">
+      <label>Descrição</label>
+      <textarea id="descricao" rows="2"></textarea>
+      <div class="linha">
+        <div><label>Preço (R$)</label><input type="number" step="0.01" id="preco"></div>
+        <div><label>Custo (R$)</label><input type="number" step="0.01" id="custo"></div>
+      </div>
+      <label>Código de barras</label>
+      <input type="text" id="codigo">
+      <label>Categoria</label>
+      <input type="text" id="categoria" value="Sorvete">
+      <label>Foto</label>
+      <input type="file" id="foto" accept="image/*">
+      <label><input type="checkbox" id="destaque"> Destaque</label><br>
+      <label><input type="checkbox" id="disponivel" checked> Disponível</label>
+      <br><br>
+      <button class="botao" id="btnSalvar" type="button">Salvar</button>
+      <button class="botao esc" id="btnCancelar" type="button" style="background:#999">Cancelar edição</button>
+      <p class="msg" id="msgForm"></p>
+    </div>
+    <div class="caixa">
+      <h2>Sabores cadastrados</h2>
+      <div id="listaAdmin"></div>
+    </div>
   </div>
 </div>
 
@@ -69,6 +175,7 @@
 function $(id){return document.getElementById(id);}
 window.onerror=function(m){alert("ERRO: "+m);};
 
+/* =================== LOGIN =================== */
 async function mostrarPainel(){
   var s=await db.auth.getSession();
   if(!s.data.session){return;}
@@ -84,6 +191,12 @@ async function mostrarPainel(){
   $("telaPainel").classList.remove("esc");
   $("btnSair").classList.remove("esc");
   listar();
+  await carregarLimite();
+  await carregarCorAdmin();
+  carregarResumo().catch(erroResumo);
+  setInterval(function(){
+    if(!$("abaResumo").classList.contains("esc")) carregarResumo().catch(erroResumo);
+  },30000);
 }
 
 async function entrar(){
@@ -93,6 +206,263 @@ async function entrar(){
   await mostrarPainel();
 }
 
+function aba(n){
+  $("abaResumo").classList.toggle("esc",n!=="resumo");
+  $("abaSabores").classList.toggle("esc",n!=="sabores");
+  $("abaCor").classList.toggle("esc",n!=="cor");
+  $("abaBtnResumo").classList.toggle("ativo",n==="resumo");
+  $("abaBtnSabores").classList.toggle("ativo",n==="sabores");
+  $("abaBtnCor").classList.toggle("ativo",n==="cor");
+  if(n!=="cor") aplicarCor(corSalva); // descarta cor testada e não salva
+  if(n==="resumo") carregarResumo().catch(erroResumo);
+}
+
+/* =================== RESUMO E PEDIDOS =================== */
+var ATIVOS=["novo","preparando","pronto","saiu_entrega"];
+var NOMES={novo:"Novo",preparando:"Em preparo",pronto:"Pronto",saiu_entrega:"Saiu para entrega",entregue:"Finalizado",cancelado:"Cancelado"};
+var PAGTO={pix:"Pix",dinheiro:"Dinheiro",credito:"Cartão de crédito",debito:"Cartão de débito"};
+var LIMITE=30, periodo="hoje", fila="todos", dados=[];
+
+function erroResumo(e){$("msgResumo").textContent="Erro: "+(e.message||e);}
+
+function inicioPeriodo(){
+  var d=new Date();d.setHours(0,0,0,0);
+  if(periodo==="7d")d.setDate(d.getDate()-6);
+  if(periodo==="30d")d.setDate(d.getDate()-29);
+  return d;
+}
+function minutosDesde(p){return Math.floor((Date.now()-new Date(p.criado_em).getTime())/60000);}
+function atrasado(p){return ATIVOS.indexOf(p.status)>-1&&minutosDesde(p)>LIMITE;}
+function tempo(m){return m<60?m+" min":Math.floor(m/60)+"h"+(m%60<10?"0":"")+(m%60);}
+function soma(l,f){return l.reduce(function(t,p){return t+f(p);},0);}
+
+async function carregarLimite(){
+  var c=await db.from("config_loja").select("dados").eq("id",1).maybeSingle();
+  var v=c.data&&c.data.dados?Number(c.data.dados.minutosAtraso):0;
+  if(v>0)LIMITE=v;
+  $("limite").value=LIMITE;
+}
+
+async function salvarLimite(){
+  var v=Math.floor(Number($("limite").value));
+  if(!v||v<1){$("msgLimite").textContent="Informe um número de minutos.";return;}
+  $("msgLimite").textContent="Salvando...";
+  var c=await db.from("config_loja").select("dados").eq("id",1).maybeSingle();
+  var novo=Object.assign({},c.data&&c.data.dados?c.data.dados:{},{minutosAtraso:v});
+  var r=await db.from("config_loja").upsert({id:1,dados:novo}).select();
+  if(r.error){$("msgLimite").textContent="Erro: "+r.error.message;return;}
+  if(!r.data||r.data.length===0){$("msgLimite").textContent="O banco não salvou (sem permissão de dono).";return;}
+  LIMITE=v;
+  $("msgLimite").textContent="Salvo!";
+  desenharResumo();
+}
+
+async function carregarResumo(){
+  $("msgResumo").textContent="";
+  var ini=inicioPeriodo().toISOString();
+  // pedidos do período + qualquer pedido ainda em andamento (mesmo de dias anteriores)
+  var r=await db.from("pedidos")
+    .select("*, itens_pedido(nome,quantidade,preco_unit)")
+    .or("criado_em.gte."+ini+",status.in.(novo,preparando,pronto,saiu_entrega)")
+    .order("criado_em",{ascending:false}).limit(1000);
+  if(r.error){erroResumo(r.error);return;}
+  dados=r.data||[];
+  $("horaAtualizado").textContent="Atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  desenharResumo();
+}
+
+function caixaNum(rotulo,valor,opcoes){
+  opcoes=opcoes||{};
+  var el=document.createElement(opcoes.clique?"button":"div");
+  if(opcoes.clique){el.type="button";el.onclick=opcoes.clique;}
+  el.className="num"+(opcoes.alerta?" alerta":"")+(opcoes.sel?" sel":"");
+  var b=document.createElement("b");b.textContent=valor;
+  var s=document.createElement("span");s.textContent=rotulo;
+  el.appendChild(b);el.appendChild(s);
+  return el;
+}
+
+function desenharResumo(){
+  var ini=inicioPeriodo().getTime();
+  var noPer=dados.filter(function(p){return new Date(p.criado_em).getTime()>=ini;});
+  var validos=noPer.filter(function(p){return p.status!=="cancelado";});
+  var total=function(p){return Number(p.total);};
+
+  /* --- vendas --- */
+  var vendido=soma(validos,total);
+  var recebido=soma(validos.filter(function(p){return p.pago;}),total);
+  var onl=validos.filter(function(p){return p.origem==="online";});
+  var bal=validos.filter(function(p){return p.origem!=="online";});
+  var g=$("gradeVendas");g.innerHTML="";
+  g.appendChild(caixaNum("Total vendido",dinheiro(vendido)));
+  g.appendChild(caixaNum("Já recebido",dinheiro(recebido)));
+  g.appendChild(caixaNum("A receber",dinheiro(vendido-recebido),{alerta:vendido-recebido>0.004}));
+  g.appendChild(caixaNum("Pedidos (sem cancelados)",String(validos.length)));
+  g.appendChild(caixaNum("Ticket médio",dinheiro(validos.length?vendido/validos.length:0)));
+  g.appendChild(caixaNum("Online ("+onl.length+")",dinheiro(soma(onl,total))));
+  g.appendChild(caixaNum("Balcão ("+bal.length+")",dinheiro(soma(bal,total))));
+
+  /* --- mais vendidos --- */
+  var mapa={};
+  validos.forEach(function(p){
+    (p.itens_pedido||[]).forEach(function(i){
+      var m=mapa[i.nome]||(mapa[i.nome]={nome:i.nome,qtd:0,valor:0});
+      m.qtd+=i.quantidade;
+      m.valor+=i.quantidade*Number(i.preco_unit);
+    });
+  });
+  var rank=Object.keys(mapa).map(function(k){return mapa[k];})
+    .sort(function(a,b){return b.qtd-a.qtd||b.valor-a.valor;});
+  var rb=$("boxRank");rb.innerHTML="";
+  if(rank.length===0){rb.textContent="Nenhuma venda neste período.";}
+  else{
+    var top=document.createElement("div");top.className="destaque-top";
+    top.appendChild(document.createTextNode("🏆 Mais vendido: "));
+    var tn=document.createElement("b");tn.textContent=rank[0].nome;top.appendChild(tn);
+    top.appendChild(document.createTextNode(" — "+rank[0].qtd+" unidade"+(rank[0].qtd>1?"s":"")+" ("+dinheiro(rank[0].valor)+")"));
+    rb.appendChild(top);
+    var t=document.createElement("table");t.className="rank";
+    var h=document.createElement("tr");
+    ["Sabor","Qtd","Valor"].forEach(function(x){var th=document.createElement("th");th.textContent=x;h.appendChild(th);});
+    t.appendChild(h);
+    rank.slice(0,10).forEach(function(m,idx){
+      var tr=document.createElement("tr");
+      [(idx+1)+". "+m.nome,String(m.qtd),dinheiro(m.valor)].forEach(function(x){
+        var td=document.createElement("td");td.textContent=x;tr.appendChild(td);
+      });
+      t.appendChild(tr);
+    });
+    rb.appendChild(t);
+  }
+
+  /* --- fila dos pedidos online --- */
+  var online=dados.filter(function(p){return p.origem==="online";});
+  var n=function(f){return online.filter(f).length;};
+  var itensFila=[
+    ["todos","Todos",dados.length,false],
+    ["novo","Não começados",n(function(p){return p.status==="novo";}),false],
+    ["preparando","Em preparo",n(function(p){return p.status==="preparando";}),false],
+    ["pronto","Prontos",n(function(p){return p.status==="pronto";}),false],
+    ["saiu_entrega","Saíram p/ entrega",n(function(p){return p.status==="saiu_entrega";}),false],
+    ["entregue","Finalizados",n(function(p){return p.status==="entregue"&&new Date(p.criado_em).getTime()>=ini;}),false],
+    ["atrasados","Atrasados",n(atrasado),true],
+    ["cancelado","Cancelados",n(function(p){return p.status==="cancelado"&&new Date(p.criado_em).getTime()>=ini;}),false]
+  ];
+  var gf=$("gradeFila");gf.innerHTML="";
+  itensFila.forEach(function(f){
+    gf.appendChild(caixaNum(f[1],String(f[2]),{
+      clique:function(){fila=f[0];desenharResumo();},
+      sel:fila===f[0],
+      alerta:f[3]&&f[2]>0
+    }));
+  });
+
+  desenharLista(ini);
+}
+
+function passaFila(p,ini){
+  if(fila==="todos")return true;
+  if(p.origem!=="online")return false;
+  var noPer=new Date(p.criado_em).getTime()>=ini;
+  if(fila==="atrasados")return atrasado(p);
+  if(fila==="entregue"||fila==="cancelado")return p.status===fila&&noPer;
+  return p.status===fila;
+}
+
+function desenharLista(ini){
+  var nomeFila={todos:"Todos os pedidos",novo:"Não começados",preparando:"Em preparo",pronto:"Prontos",saiu_entrega:"Saíram para entrega",entregue:"Finalizados",atrasados:"Atrasados",cancelado:"Cancelados"};
+  var itens=dados.filter(function(p){return passaFila(p,ini);});
+  $("tituloLista").textContent=nomeFila[fila]+" ("+itens.length+")";
+  if(fila!=="todos"&&fila!=="entregue"&&fila!=="cancelado")itens=itens.slice().reverse(); // mais antigo primeiro
+
+  var box=$("listaPedidos");box.innerHTML="";
+  if(itens.length===0){box.textContent="Nenhum pedido aqui.";return;}
+  itens.slice(0,100).forEach(function(p){box.appendChild(cartao(p));});
+  if(itens.length>100){
+    var m=document.createElement("p");m.className="peq";
+    m.textContent="Mostrando 100 de "+itens.length+" pedidos. Use a tela dos funcionários ou reduza o período.";
+    box.appendChild(m);
+  }
+}
+
+function linha(texto){var p=document.createElement("p");p.textContent=texto;return p;}
+
+function cartao(p){
+  var c=document.createElement("div");
+  c.className="pa"+(atrasado(p)?" atrasado":"");
+
+  var topo=document.createElement("div");topo.className="pa-topo";
+  var hora=new Date(p.criado_em).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+  var e=document.createElement("span");e.textContent="Pedido #"+p.codigo+" · "+hora;
+  var d=document.createElement("span");
+  var st=document.createElement("span");st.className="tag "+p.status;st.textContent=NOMES[p.status]||p.status;
+  d.appendChild(st);
+  if(atrasado(p)){
+    d.appendChild(document.createTextNode(" "));
+    var at=document.createElement("span");at.className="tag atrasado";at.textContent="Atrasado há "+tempo(minutosDesde(p));
+    d.appendChild(at);
+  }
+  topo.appendChild(e);topo.appendChild(d);
+  c.appendChild(topo);
+
+  if(p.origem==="online"){
+    c.appendChild(linha((p.cliente_nome||"")+" · "+(p.cliente_telefone||"")));
+    c.appendChild(linha(p.tipo_entrega==="entrega"?"Entrega: "+(p.endereco||""):"Retirada na loja"));
+    if(p.observacao)c.appendChild(linha("Obs: "+p.observacao));
+  }else{
+    c.appendChild(linha("Venda no balcão"));
+  }
+
+  var ul=document.createElement("ul");
+  (p.itens_pedido||[]).forEach(function(i){
+    var li=document.createElement("li");li.textContent=i.quantidade+"x "+i.nome;ul.appendChild(li);
+  });
+  c.appendChild(ul);
+
+  c.appendChild(linha(dinheiro(p.total)+" · "+(PAGTO[p.forma_pagamento]||p.forma_pagamento||"")+
+    (Number(p.taxa_entrega)>0?" · inclui entrega "+dinheiro(p.taxa_entrega):"")+
+    " · "+(p.pago?"Pago":"Não pago")));
+  return c;
+}
+
+/* =================== COR DO APLICATIVO =================== */
+var corSalva=COR_PADRAO;
+var PRONTAS=["#d6336c","#d62828","#f77f00","#f2b705","#2a9d4a","#1d70d6","#7b2cbf","#8a5a44","#222222"];
+
+async function carregarCorAdmin(){
+  var c=await db.from("config_loja").select("dados").eq("id",1).maybeSingle();
+  var v=c.data&&c.data.dados?c.data.dados.corPrincipal:null;
+  corSalva=corValida(v)?v:COR_PADRAO;
+  previaCor(corSalva);
+  var box=$("coresProntas");box.innerHTML="";
+  PRONTAS.forEach(function(h){
+    var b=document.createElement("button");b.type="button";b.style.background=h;b.title=h;
+    b.onclick=function(){previaCor(h);};
+    box.appendChild(b);
+  });
+}
+
+function previaCor(h){
+  if(!aplicarCor(h))return;
+  $("corEscolhida").value=h;
+  $("hexCor").textContent=h;
+  $("msgCor").textContent=h===corSalva?"":"Ainda não salvo.";
+}
+
+async function salvarCor(h){
+  if(!corValida(h)){$("msgCor").textContent="Cor inválida.";return;}
+  $("msgCor").textContent="Salvando...";
+  var c=await db.from("config_loja").select("dados").eq("id",1).maybeSingle();
+  var novo=Object.assign({},c.data&&c.data.dados?c.data.dados:{},{corPrincipal:h});
+  var r=await db.from("config_loja").upsert({id:1,dados:novo}).select();
+  if(r.error){$("msgCor").textContent="Erro: "+r.error.message;return;}
+  if(!r.data||r.data.length===0){$("msgCor").textContent="O banco não salvou (sem permissão de dono).";return;}
+  corSalva=h;
+  previaCor(h);
+  $("msgCor").textContent="Cor salva! Já vale para todo mundo.";
+}
+
+/* =================== SABORES =================== */
 async function listar(){
   var r=await db.from("sabores").select("*").order("nome");
   var box=$("listaAdmin");box.innerHTML="";
@@ -168,10 +538,27 @@ async function salvar(){
   limpar();listar();
 }
 
+/* =================== EVENTOS =================== */
 $("btnEntrar").addEventListener("click",function(){
   entrar().catch(function(e){$("msgLogin").textContent="Erro: "+e.message;});
 });
 $("btnSair").addEventListener("click",async function(){await db.auth.signOut();location.reload();});
+$("abaBtnResumo").addEventListener("click",function(){aba("resumo");});
+$("abaBtnSabores").addEventListener("click",function(){aba("sabores");});
+$("abaBtnCor").addEventListener("click",function(){aba("cor");});
+$("corEscolhida").addEventListener("input",function(){previaCor(this.value);});
+$("btnSalvarCor").addEventListener("click",function(){
+  salvarCor($("corEscolhida").value).catch(function(e){$("msgCor").textContent="Erro: "+e.message;});
+});
+$("btnCorPadrao").addEventListener("click",function(){
+  previaCor(COR_PADRAO);
+  salvarCor(COR_PADRAO).catch(function(e){$("msgCor").textContent="Erro: "+e.message;});
+});
+$("selPeriodo").addEventListener("change",function(){periodo=this.value;carregarResumo().catch(erroResumo);});
+$("btnAtualizar").addEventListener("click",function(){carregarResumo().catch(erroResumo);});
+$("btnSalvarLimite").addEventListener("click",function(){
+  salvarLimite().catch(function(e){$("msgLimite").textContent="Erro: "+e.message;});
+});
 $("btnCancelar").addEventListener("click",limpar);
 $("btnSalvar").addEventListener("click",function(){
   salvar().catch(function(e){$("msgForm").textContent="Erro: "+e.message;});
