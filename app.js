@@ -4,11 +4,19 @@ var LOJA = {
   endereco: "Rua Exemplo, 123 - São Paulo/SP",
   horario: "Todos os dias, das 12h às 22h",
   whatsapp: "5511999999999",
-  heroTopo: "Momentos doces, felicidade em cada bola",
-  heroTitulo: "A vida é melhor com",
-  heroDestaque: "sorvete",
-  heroTexto: "Cremoso, saboroso e feito com ingredientes frescos. Escolha o seu e retire na loja.",
+  heroTitulo: "Sabor que *Encanta*, Experiência que *Marca!*",
+  heroDestaque: "",
+  heroTexto: "Sorvetes e sobremesas feitas com carinho para momentos especiais.",
+  heroBotao: "Saiba mais!",
+  heroChamada: "Reserve sua mesa e *viva essa experiência!*",
   heroFoto: "",
+  secTitulo: "A escolha está em *suas mãos!*",
+  secTexto: "Aproveite os melhores sabores de sorvetes disponíveis pra você e sua família.",
+  secBotao: "Saiba mais!",
+  secFoto: "",
+  tituloCardapio: "Nossos *sabores*",
+  instagram: "/Sorveteriachemais",
+  site: "www.sorveteriachegamais.com.br",
   promoAtiva: true,
   promoTopo: "Oferta especial",
   promoTitulo: "Compre 2 bolas, leve 3",
@@ -17,7 +25,11 @@ var LOJA = {
   pixNome: "",
   pixCidade: "",
   taxaEntrega: 0,
-  corPrincipal: "#d6336c"
+  cor1: "#ff9f1c",
+  cor2: "#e63946",
+  corFundo: "#fdf1dc",
+  corTexto: "#3b2417",
+  corPrincipal: "#ff9f1c"
 };
 // ==============================================================
 
@@ -37,29 +49,67 @@ function txt(id, v) {
   if (e) e.textContent = v;
 }
 
+// *palavra* vira destaque colorido
+function destacar(id, texto) {
+  var e = document.getElementById(id);
+  if (!e) return;
+  e.textContent = "";
+  String(texto || "").split("*").forEach(function (p, i) {
+    if (!p) return;
+    if (i % 2) { var sp = document.createElement("span"); sp.className = "dst"; sp.textContent = p; e.appendChild(sp); }
+    else e.appendChild(document.createTextNode(p));
+  });
+}
+
+function cor(v, padrao) { return corValida(v) ? v : padrao; }
+
+// aplica as 4 cores do site (o dono escolhe no painel)
+function aplicarCores(o) {
+  var c1 = cor(o.cor1, "#ff9f1c"), c2 = cor(o.cor2, "#e63946");
+  var st = document.documentElement.style;
+  st.setProperty("--c1", c1);
+  st.setProperty("--c2", c2);
+  st.setProperty("--fundo", cor(o.corFundo, "#fdf1dc"));
+  st.setProperty("--texto", cor(o.corTexto, "#3b2417"));
+  st.setProperty("--sobre2", luminosidade(c2) > 0.2 ? "#2b1a12" : "#ffffff");
+  aplicarCor(c1); // botões do carrinho e --sobre-cor
+  try { localStorage.setItem("temaLoja", JSON.stringify({ cor1: c1, cor2: c2, corFundo: o.corFundo, corTexto: o.corTexto })); } catch (e) {}
+}
+try { aplicarCores(JSON.parse(localStorage.getItem("temaLoja")) || {}); } catch (e) {}
+
+function foto(imgId, arteId, url) {
+  var i = document.getElementById(imgId), a = document.getElementById(arteId);
+  if (!i) return;
+  if (url) { i.src = url; i.hidden = false; if (a) a.style.display = "none"; }
+  else { i.hidden = true; if (a) a.style.display = ""; }
+}
+
 function preencherLoja() {
-  aplicarCor(LOJA.corPrincipal);
+  aplicarCores(LOJA);
+  LOJA.corPrincipal = cor(LOJA.cor1, "#ff9f1c");
   document.title = LOJA.nome;
   txt("lojaNome", LOJA.nome);
   txt("lojaEndereco", LOJA.endereco);
   txt("lojaHorario", LOJA.horario);
   txt("lojaRodape", "© " + new Date().getFullYear() + " " + LOJA.nome);
-  txt("heroTopo", LOJA.heroTopo);
+  txt("lojaInsta", LOJA.instagram);
+  txt("lojaSite", LOJA.site);
   txt("heroTexto", LOJA.heroTexto);
+  txt("heroBotao", LOJA.heroBotao);
+  txt("secTexto", LOJA.secTexto);
+  txt("secBotao", LOJA.secBotao);
 
   var z = document.getElementById("lojaZap");
   if (z) z.href = "https://wa.me/" + LOJA.whatsapp;
 
-  var h = document.getElementById("heroTitulo");
-  if (h) {
-    h.textContent = LOJA.heroTitulo + " ";
-    var s = document.createElement("span");
-    s.textContent = LOJA.heroDestaque;
-    h.appendChild(s);
-  }
-
-  var f = document.querySelector(".palco .foto");
-  if (f && LOJA.heroFoto) f.style.backgroundImage = 'url("' + LOJA.heroFoto + '")';
+  var ht = String(LOJA.heroTitulo || "");
+  if (LOJA.heroDestaque && ht.indexOf("*") === -1) ht += " *" + LOJA.heroDestaque + "*"; // sites antigos
+  destacar("heroTitulo", ht);
+  destacar("heroChamada", LOJA.heroChamada);
+  destacar("secTitulo", LOJA.secTitulo);
+  destacar("tituloCardapio", LOJA.tituloCardapio);
+  foto("heroImg", "heroArte", LOJA.heroFoto);
+  foto("secImg", "secArte", LOJA.secFoto);
 
   var bp = document.getElementById("blocoPromo");
   if (bp) {
@@ -71,6 +121,17 @@ function preencherLoja() {
     if (pi && LOJA.promoFoto) { pi.src = LOJA.promoFoto; pi.style.display = ""; }
   }
 }
+
+// animação: cada bloco aparece quando você rola até ele
+var revelador = ("IntersectionObserver" in window) ? new IntersectionObserver(function (es) {
+  es.forEach(function (e) {
+    if (e.isIntersecting) { e.target.classList.add("vis"); revelador.unobserve(e.target); }
+  });
+}, { threshold: 0.15 }) : null;
+function revelar(el) {
+  if (revelador) revelador.observe(el); else el.classList.add("vis");
+}
+document.querySelectorAll(".rev").forEach(revelar);
 
 var observador = new IntersectionObserver(function (entradas) {
   entradas.forEach(function (e) {
@@ -84,7 +145,7 @@ var observador = new IntersectionObserver(function (entradas) {
 
 function criarCard(s) {
   var card = document.createElement("div");
-  card.className = "card" + (s.disponivel ? "" : " esgotado") + (s.destaque && s.disponivel ? " destaque" : "");
+  card.className = "card rev" + (s.disponivel ? "" : " esgotado") + (s.destaque && s.disponivel ? " destaque" : "");
   card.dataset.id = s.id;
 
   if (s.foto_url) {
@@ -108,23 +169,6 @@ function criarCard(s) {
   desc.textContent = s.descricao || "";
   box.appendChild(nome);
   box.appendChild(desc);
-
-  var rot = document.createElement("span");
-  rot.className = "rot";
-  rot.textContent = "Tipo de pedido:";
-  var chips = document.createElement("div");
-  chips.className = "chips";
-  [["retirada", "Retirar"], ["entrega", "Entrega"]].forEach(function (t) {
-    var c = document.createElement("button");
-    c.type = "button";
-    c.className = "chip";
-    c.dataset.tipo = t[0];
-    c.textContent = t[1];
-    c.onclick = function () { el("cTipo").value = t[0]; renderCarrinho(); };
-    chips.appendChild(c);
-  });
-  box.appendChild(rot);
-  box.appendChild(chips);
 
   var linha = document.createElement("div");
   linha.className = "linha";
@@ -157,18 +201,14 @@ function criarCard(s) {
   if (DONO) card.appendChild(barraCard(s));
 
   observador.observe(card);
+  revelar(card);
   return card;
 }
 
-// mantém quantidades e tipo de pedido dos cards em sincronia com o carrinho
 function atualizarQtds() {
-  var tipo = el("cTipo").value;
   document.querySelectorAll(".passo .n").forEach(function (n) {
     var it = carrinho.find(function (i) { return String(i.id) === n.dataset.id; });
     n.textContent = it ? it.quantidade : 0;
-  });
-  document.querySelectorAll(".chip").forEach(function (c) {
-    c.classList.toggle("on", c.dataset.tipo === tipo);
   });
 }
 var _renderCarrinho = renderCarrinho;
