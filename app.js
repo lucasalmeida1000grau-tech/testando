@@ -1,16 +1,16 @@
 // ===== DADOS DA LOJA: troque aqui =====
 var LOJA = {
   nome: "ice pan",
-  endereco: "Rua Exemplo, 123 - São Paulo/SP",
+  endereco: "estrada das taipas 618",
   horario: "Todos os dias, das 12h às 22h",
-  whatsapp: "5511999999999",
+  whatsapp: "5511978268056",
   heroTopo: "Momentos doces, felicidade em cada bola",
   heroTitulo: "A vida é melhor com",
   heroDestaque: "sorvete",
-  heroTexto: "Cremoso, saboroso e feito com ingredientes frescos. Escolha o seu e retire na loja.",
+  heroTexto: "Cremoso, saboroso e feito com ingredientes frescos. Escolha o seu e faca seu pedido.",
   promoAtiva: true,
-  promoTopo: "Oferta especial",
-  promoTitulo: "Compre 2 bolas, leve 3"
+  promoTopo:
+  promoTitulo: 
 };
 // ======================================
 
