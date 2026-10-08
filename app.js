@@ -58,7 +58,7 @@ function preencherLoja() {
     h.appendChild(s);
   }
 
-  var f = document.querySelector(".hero .foto");
+  var f = document.querySelector(".palco .foto");
   if (f && LOJA.heroFoto) f.style.backgroundImage = 'url("' + LOJA.heroFoto + '")';
 
   var bp = document.getElementById("blocoPromo");
@@ -84,15 +84,8 @@ var observador = new IntersectionObserver(function (entradas) {
 
 function criarCard(s) {
   var card = document.createElement("div");
-  card.className = "card" + (s.disponivel ? "" : " esgotado");
+  card.className = "card" + (s.disponivel ? "" : " esgotado") + (s.destaque && s.disponivel ? " destaque" : "");
   card.dataset.id = s.id;
-
-  if (s.destaque && s.disponivel) {
-    var selo = document.createElement("span");
-    selo.className = "selo";
-    selo.textContent = "Destaque";
-    card.appendChild(selo);
-  }
 
   if (s.foto_url) {
     var img = document.createElement("img");
@@ -109,29 +102,56 @@ function criarCard(s) {
 
   var box = document.createElement("div");
   box.className = "conteudo";
-
   var nome = document.createElement("h3");
   nome.textContent = s.nome;
   var desc = document.createElement("p");
   desc.textContent = s.descricao || "";
+  box.appendChild(nome);
+  box.appendChild(desc);
+
+  var rot = document.createElement("span");
+  rot.className = "rot";
+  rot.textContent = "Tipo de pedido:";
+  var chips = document.createElement("div");
+  chips.className = "chips";
+  [["retirada", "Retirar"], ["entrega", "Entrega"]].forEach(function (t) {
+    var c = document.createElement("button");
+    c.type = "button";
+    c.className = "chip";
+    c.dataset.tipo = t[0];
+    c.textContent = t[1];
+    c.onclick = function () { el("cTipo").value = t[0]; renderCarrinho(); };
+    chips.appendChild(c);
+  });
+  box.appendChild(rot);
+  box.appendChild(chips);
+
+  var linha = document.createElement("div");
+  linha.className = "linha";
   var preco = document.createElement("span");
   preco.className = "preco";
   preco.textContent = dinheiro(s.preco);
+  linha.appendChild(preco);
 
-  var botao = document.createElement("button");
-  botao.className = "botao";
   if (s.disponivel) {
-    botao.textContent = "Adicionar ao pedido";
-    botao.onclick = function () { adicionarAoCarrinho(s); };
+    var passo = document.createElement("div");
+    passo.className = "passo";
+    var menos = document.createElement("button");
+    menos.type = "button"; menos.textContent = "−"; menos.setAttribute("aria-label", "Remover");
+    menos.onclick = function () { mudarQtd(s.id, -1); };
+    var n = document.createElement("span");
+    n.className = "n"; n.dataset.id = s.id; n.textContent = "0";
+    var mais = document.createElement("button");
+    mais.type = "button"; mais.textContent = "+"; mais.setAttribute("aria-label", "Adicionar");
+    mais.onclick = function () { adicionarAoCarrinho(s); };
+    passo.appendChild(menos); passo.appendChild(n); passo.appendChild(mais);
+    linha.appendChild(passo);
   } else {
-    botao.textContent = "Esgotado";
-    botao.disabled = true;
+    var esg = document.createElement("span");
+    esg.textContent = "Esgotado";
+    linha.appendChild(esg);
   }
-
-  box.appendChild(nome);
-  box.appendChild(desc);
-  box.appendChild(preco);
-  box.appendChild(botao);
+  box.appendChild(linha);
   card.appendChild(box);
 
   if (DONO) card.appendChild(barraCard(s));
@@ -139,6 +159,21 @@ function criarCard(s) {
   observador.observe(card);
   return card;
 }
+
+// mantém quantidades e tipo de pedido dos cards em sincronia com o carrinho
+function atualizarQtds() {
+  var tipo = el("cTipo").value;
+  document.querySelectorAll(".passo .n").forEach(function (n) {
+    var it = carrinho.find(function (i) { return String(i.id) === n.dataset.id; });
+    n.textContent = it ? it.quantidade : 0;
+  });
+  document.querySelectorAll(".chip").forEach(function (c) {
+    c.classList.toggle("on", c.dataset.tipo === tipo);
+  });
+}
+var _renderCarrinho = renderCarrinho;
+renderCarrinho = function () { _renderCarrinho(); atualizarQtds(); };
+el("cTipo").onchange = renderCarrinho;
 
 function montarCategorias() {
   var box = document.getElementById("categorias");
@@ -194,6 +229,7 @@ function mostrar() {
     return;
   }
   itens.forEach(function (s) { lista.appendChild(criarCard(s)); });
+  atualizarQtds();
 }
 
 async function carregar() {
