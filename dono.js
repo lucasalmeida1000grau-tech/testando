@@ -245,4 +245,6 @@ document.getElementById("btnDono").onclick = function (e) {
   if (!DONO) abrirLogin();
 };
 
-verificarDono();
+verificarDono().then(function (ok) {
+  if (!ok && location.hash === "#dono") abrirLogin();
+});
