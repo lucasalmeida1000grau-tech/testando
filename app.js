@@ -20,9 +20,14 @@ var categoriaAtual = "Todos";
 var jaVisto = {};
 
 function erroNaTela(t) {
-  document.getElementById("lista").innerHTML = '<p class="aviso">Erro: ' + t + "</p>";
+  var l = document.getElementById("lista");
+  if (l) l.innerHTML = '<p class="aviso">Erro: ' + t + "</p>";
 }
-function txt(id, v) { document.getElementById(id).textContent = v; }
+
+function txt(id, v) {
+  var e = document.getElementById(id);
+  if (e) e.textContent = v;
+}
 
 function preencherLoja() {
   document.title = LOJA.nome;
@@ -30,16 +35,23 @@ function preencherLoja() {
   txt("lojaEndereco", LOJA.endereco);
   txt("lojaHorario", LOJA.horario);
   txt("lojaRodape", "© " + new Date().getFullYear() + " " + LOJA.nome);
-  document.getElementById("lojaZap").href = "https://wa.me/" + LOJA.whatsapp;
   txt("heroTopo", LOJA.heroTopo);
   txt("heroTexto", LOJA.heroTexto);
+
+  var z = document.getElementById("lojaZap");
+  if (z) z.href = "https://wa.me/" + LOJA.whatsapp;
+
   var h = document.getElementById("heroTitulo");
-  h.textContent = LOJA.heroTitulo + " ";
-  var s = document.createElement("span");
-  s.textContent = LOJA.heroDestaque;
-  h.appendChild(s);
-  if (LOJA.promoAtiva) {
-    document.getElementById("blocoPromo").classList.remove("escondido");
+  if (h) {
+    h.textContent = LOJA.heroTitulo + " ";
+    var s = document.createElement("span");
+    s.textContent = LOJA.heroDestaque;
+    h.appendChild(s);
+  }
+
+  var bp = document.getElementById("blocoPromo");
+  if (LOJA.promoAtiva && bp) {
+    bp.classList.remove("escondido");
     txt("promoTopo", LOJA.promoTopo);
     txt("promoTitulo", LOJA.promoTitulo);
   }
@@ -66,9 +78,12 @@ function criarCard(s) {
     selo.textContent = "Destaque";
     card.appendChild(selo);
   }
+
   if (s.foto_url) {
     var img = document.createElement("img");
-    img.src = s.foto_url; img.alt = s.nome; img.loading = "lazy";
+    img.src = s.foto_url;
+    img.alt = s.nome;
+    img.loading = "lazy";
     card.appendChild(img);
   } else {
     var sf = document.createElement("div");
@@ -79,10 +94,17 @@ function criarCard(s) {
 
   var box = document.createElement("div");
   box.className = "conteudo";
-  var nome = document.createElement("h3"); nome.textContent = s.nome;
-  var desc = document.createElement("p"); desc.textContent = s.descricao || "";
-  var preco = document.createElement("span"); preco.className = "preco"; preco.textContent = dinheiro(s.preco);
-  var botao = document.createElement("button"); botao.className = "botao";
+
+  var nome = document.createElement("h3");
+  nome.textContent = s.nome;
+  var desc = document.createElement("p");
+  desc.textContent = s.descricao || "";
+  var preco = document.createElement("span");
+  preco.className = "preco";
+  preco.textContent = dinheiro(s.preco);
+
+  var botao = document.createElement("button");
+  botao.className = "botao";
   if (s.disponivel) {
     botao.textContent = "Adicionar ao pedido";
     botao.onclick = function () { adicionarAoCarrinho(s); };
@@ -90,7 +112,11 @@ function criarCard(s) {
     botao.textContent = "Esgotado";
     botao.disabled = true;
   }
-  box.appendChild(nome); box.appendChild(desc); box.appendChild(preco); box.appendChild(botao);
+
+  box.appendChild(nome);
+  box.appendChild(desc);
+  box.appendChild(preco);
+  box.appendChild(botao);
   card.appendChild(box);
   observador.observe(card);
   return card;
@@ -98,38 +124,64 @@ function criarCard(s) {
 
 function montarCategorias() {
   var box = document.getElementById("categorias");
+  if (!box) return;
   box.innerHTML = "";
+
   var nomes = ["Todos"];
   sabores.forEach(function (s) {
     if (s.categoria && nomes.indexOf(s.categoria) === -1) nomes.push(s.categoria);
   });
   if (nomes.length < 3) return;
+
   nomes.forEach(function (c) {
     var b = document.createElement("button");
     b.className = "cat" + (c === categoriaAtual ? " ativo" : "");
+
     var bola = document.createElement("div");
     bola.className = "bola";
-    var ex = sabores.find(function (s) { return s.foto_url && (c === "Todos" || s.categoria === c); });
-    if (ex) { var i = document.createElement("img"); i.src = ex.foto_url; i.alt = ""; bola.appendChild(i); }
-    else { bola.textContent = c.charAt(0).toUpperCase(); }
-    var l = document.createElement("span"); l.textContent = c;
-    b.appendChild(bola); b.appendChild(l);
-    b.onclick = function () { categoriaAtual = c; montarCategorias(); mostrar(); };
+    var ex = sabores.find(function (s) {
+      return s.foto_url && (c === "Todos" || s.categoria === c);
+    });
+    if (ex) {
+      var i = document.createElement("img");
+      i.src = ex.foto_url;
+      i.alt = "";
+      bola.appendChild(i);
+    } else {
+      bola.textContent = c.charAt(0).toUpperCase();
+    }
+
+    var l = document.createElement("span");
+    l.textContent = c;
+    b.appendChild(bola);
+    b.appendChild(l);
+    b.onclick = function () {
+      categoriaAtual = c;
+      montarCategorias();
+      mostrar();
+    };
     box.appendChild(b);
   });
 }
 
 function mostrar() {
   var lista = document.getElementById("lista");
-  var itens = sabores.filter(function (s) { return categoriaAtual === "Todos" || s.categoria === categoriaAtual; });
+  if (!lista) return;
+  var itens = sabores.filter(function (s) {
+    return categoriaAtual === "Todos" || s.categoria === categoriaAtual;
+  });
   lista.innerHTML = "";
-  if (itens.length === 0) { lista.innerHTML = '<p class="aviso">Nenhum sabor cadastrado ainda.</p>'; return; }
+  if (itens.length === 0) {
+    lista.innerHTML = '<p class="aviso">Nenhum sabor cadastrado ainda.</p>';
+    return;
+  }
   itens.forEach(function (s) { lista.appendChild(criarCard(s)); });
 }
 
 async function carregar() {
   preencherLoja();
-  var r = await db.from("sabores").select(COLUNAS).order("destaque", { ascending: false }).order("nome");
+  var r = await db.from("sabores").select(COLUNAS)
+    .order("destaque", { ascending: false }).order("nome");
   if (r.error) { erroNaTela(r.error.message); return; }
   sabores = r.data;
   montarCategorias();
