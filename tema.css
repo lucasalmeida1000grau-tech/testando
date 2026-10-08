@@ -3,7 +3,7 @@
 body{background:var(--fundo);color:var(--texto)}
 .dst{color:var(--c1)}.dst:nth-of-type(even){color:var(--c2)}
 /* animação ao rolar */
-.js .rev{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease;transition-delay:var(--d,0s)}
+.js .rev{opacity:0;transform:translateY(24px);transition:opacity .45s ease,transform .45s ease}
 .js .rev-esq{transform:translateX(-70px)}.js .rev-dir{transform:translateX(70px)}.js .anel.rev{transform:scale(.5)}
 .js .rev.vis{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.js .rev{opacity:1;transform:none;transition:none}}
@@ -34,13 +34,12 @@ body{background:var(--fundo);color:var(--texto)}
 .chamada .dst,.s2 p .dst{font-weight:700}
 .s1-foto{display:flex;justify-content:flex-end}
 .s1-foto img{max-height:560px;width:auto;filter:drop-shadow(0 22px 28px rgba(0,0,0,.28))}
-svg.arte{max-height:540px;width:auto;filter:drop-shadow(0 22px 28px rgba(0,0,0,.25))}
 /* seção 2 */
 .s2{position:relative;overflow:hidden;background:var(--c1);display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:86vh;padding:60px 6vw}
 .curva{position:absolute;z-index:0;right:0;top:0;bottom:0;width:58%;background:var(--fundo);border-radius:45% 0 0 45% / 50% 0 0 50%}
 .canto{position:absolute;z-index:0;right:-16%;bottom:-38%;width:46%;aspect-ratio:1;border-radius:50%;background:var(--c2)}
 .s2-foto,.s2-txt{position:relative;z-index:1}
-.s2-foto img,.s2-foto svg{max-height:540px;width:auto;max-width:100%}
+.s2-foto img{max-height:540px;width:auto;max-width:100%}
 .s2-txt{padding-left:6vw}
 .redes-linha{font-size:.85rem;font-weight:500;margin-top:30px;display:flex;flex-direction:column;gap:2px}
 /* cardápio */
@@ -70,9 +69,9 @@ footer a{color:var(--c1)}
 .painel{color:#3b1f14;--cor-texto:#3b1f14;--cor-suave:#7a5c52}
 @media(max-width:820px){
  .s1,.s2{grid-template-columns:1fr;min-height:0}
- .s1-foto{justify-content:center}.s1-foto img,svg.arte{max-height:380px}
+ .s1-foto{justify-content:center}.s1-foto img{max-height:380px}
  .anel.a{width:80vw;right:-20%;top:46%}
  .curva,.canto{display:none}
- .s2{padding:0}.s2-foto{padding:40px 6vw 0;text-align:center}.s2-foto img,.s2-foto svg{max-height:320px}
+ .s2{padding:0}.s2-foto{padding:40px 6vw 0;text-align:center}.s2-foto img{max-height:320px}
  .s2-txt{background:var(--fundo);padding:40px 6vw}
 }
