@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="carrinho.css">
   <link rel="stylesheet" href="dono.css">
+  <link rel="stylesheet" href="pedido.css">
 </head>
 <body>
   <header class="topo">
@@ -17,7 +18,10 @@
       <a href="#cardapio">Cardápio</a>
       <a href="#contato">Contato</a>
     </nav>
-    <button class="btn-carrinho" id="btnAbrir">Pedido <span id="contador">0</span></button>
+    <div class="acoes-topo">
+      <button class="btn-carrinho" id="btnAcomp">Meu pedido</button>
+      <button class="btn-carrinho" id="btnAbrir">Carrinho <span id="contador">0</span></button>
+    </div>
   </header>
 
   <section class="hero" id="inicio">
@@ -54,7 +58,7 @@
   <div class="diferenciais">
     <div class="dif"><i>1</i><div><b>Qualidade premium</b><span>Feito à mão, todo dia</span></div></div>
     <div class="dif"><i>2</i><div><b>Ingredientes frescos</b><span>Selecionados com cuidado</span></div></div>
-    <div class="dif"><i>3</i><div><b>Retire rápido</b><span>Pedido pronto em minutos</span></div></div>
+    <div class="dif"><i>3</i><div><b>Retire ou receba</b><span>Você escolhe como quer</span></div></div>
     <div class="dif"><i>4</i><div><b>Pague como quiser</b><span>Pix, dinheiro e cartões</span></div></div>
   </div>
 
@@ -70,28 +74,84 @@
   <div class="fundo escondido" id="painelCarrinho">
     <div class="painel">
       <button class="fechar" id="btnFechar">×</button>
-      <h2>Seu pedido</h2>
-      <div id="itensCarrinho"></div>
-      <div class="total">Total: <span id="totalCarrinho">R$ 0,00</span></div>
-      <label>Seu nome</label>
-      <input type="text" id="cNome">
-      <label>Telefone (WhatsApp)</label>
-      <input type="tel" id="cTelefone">
-      <label>Forma de pagamento (na retirada)</label>
-      <select id="cPagamento">
-        <option value="pix">Pix</option>
-        <option value="dinheiro">Dinheiro</option>
-        <option value="credito">Cartão de crédito</option>
-        <option value="debito">Cartão de débito</option>
-      </select>
-      <button class="botao" id="btnFinalizar">Finalizar pedido</button>
-      <p class="msg-pedido" id="msgPedido"></p>
+
+      <div id="vCarrinho">
+        <h2>Seu pedido</h2>
+        <div id="itensCarrinho"></div>
+
+        <label>Como quer receber?</label>
+        <select id="cTipo">
+          <option value="retirada">Retirar na loja</option>
+          <option value="entrega">Entrega</option>
+        </select>
+        <div id="boxEndereco" class="escondido">
+          <label>Endereço de entrega</label>
+          <textarea id="cEndereco" rows="2" placeholder="Rua, número, bairro e complemento"></textarea>
+        </div>
+
+        <label>Seu nome</label>
+        <input type="text" id="cNome">
+        <label>Telefone (WhatsApp)</label>
+        <input type="tel" id="cTelefone" placeholder="(11) 99999-9999">
+
+        <label>Forma de pagamento</label>
+        <select id="cPagamento">
+          <option value="pix">Pix</option>
+          <option value="dinheiro">Dinheiro</option>
+          <option value="credito">Cartão de crédito</option>
+          <option value="debito">Cartão de débito</option>
+        </select>
+
+        <label>Observação (opcional)</label>
+        <input type="text" id="cObs" placeholder="Ex: sem granulado">
+
+        <div class="resumo">
+          <div><span>Subtotal</span><span id="subCarrinho">R$ 0,00</span></div>
+          <div id="linhaTaxa" class="escondido"><span>Entrega</span><span id="taxaCarrinho">R$ 0,00</span></div>
+          <div class="total"><span>Total</span><span id="totalCarrinho">R$ 0,00</span></div>
+        </div>
+
+        <button class="botao" id="btnFinalizar" style="width:100%">Finalizar pedido</button>
+        <p class="msg-pedido" id="msgPedido"></p>
+      </div>
+
+      <div id="vConfirma" class="escondido">
+        <h2>Pedido enviado!</h2>
+        <p class="cod">Código: <b id="confCodigo"></b></p>
+        <p id="confResumo"></p>
+
+        <div id="boxPix" class="pixbox escondido">
+          <h3>Pague com Pix</h3>
+          <p>Chave Pix: <b id="pixChave"></b></p>
+          <p>Valor: <b id="pixValor"></b></p>
+          <label>Pix copia e cola</label>
+          <textarea id="pixCopia" rows="3" readonly></textarea>
+          <button class="botao" id="btnCopiar" style="width:100%">Copiar código Pix</button>
+          <p class="peq">Depois de pagar, a loja confirma o pagamento e o seu pedido segue para o preparo.</p>
+        </div>
+
+        <button class="botao" id="btnIrAcomp" style="width:100%;margin-top:12px">Acompanhar pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fundo escondido" id="painelAcomp">
+    <div class="painel">
+      <button class="fechar" id="btnFecharAcomp">×</button>
+      <h2>Acompanhar pedido</h2>
+      <label>Código do pedido</label>
+      <input type="text" id="aCodigo">
+      <label>Seu telefone</label>
+      <input type="tel" id="aTelefone">
+      <button class="botao" id="btnConsultar" style="width:100%">Ver andamento</button>
+      <div id="resultadoAcomp"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="carrinho.js"></script>
+  <script src="acompanhar.js"></script>
   <script src="app.js"></script>
   <script src="dono.js"></script>
 </body>
