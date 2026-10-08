@@ -2,6 +2,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--fonte);background:var(--cor-fundo);color:var(--cor-texto);line-height:1.55}
 img{max-width:100%;display:block}
+.escondido{display:none !important}
 .topo{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 6vw;background:#fff;border-bottom:1px solid #f3d3de}
 .topo h1{font-size:1.4rem;font-weight:700;color:var(--cor-principal)}
 .topo nav{display:flex;gap:26px}
