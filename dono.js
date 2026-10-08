@@ -168,6 +168,7 @@ async function salvarSite(v) {
   if (!r.data || r.data.length === 0) throw new Error("O banco não salvou (sem permissão de dono).");
   Object.assign(LOJA, novo);
   preencherLoja();
+  guardarCache();
 }
 
 function editarSite() {
