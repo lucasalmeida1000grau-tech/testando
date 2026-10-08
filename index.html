@@ -4,29 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sorveteria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="carrinho.css">
 </head>
 <body>
   <header class="topo">
-    <h1>🍦 Nome da Sorveteria</h1>
-    <button class="btn-carrinho" id="btnAbrir">🛒 Carrinho <span id="contador">0</span></button>
+    <h1 id="lojaNome">Nome da Sorveteria</h1>
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <button class="btn-carrinho" id="btnAbrir">Pedido <span id="contador">0</span></button>
   </header>
 
-  <section class="secao">
-    <h2>Nossos Sabores</h2>
-    <div id="lista" class="cards">
-      <p class="aviso">Carregando sabores...</p>
+  <section class="hero" id="inicio">
+    <div class="texto">
+      <small id="heroTopo"></small>
+      <h2 id="heroTitulo"></h2>
+      <p id="heroTexto"></p>
+      <div class="botoes">
+        <a class="botao" href="#cardapio">Fazer pedido</a>
+        <a class="botao contorno" href="#cardapio">Ver sabores</a>
+      </div>
     </div>
+    <div class="foto"></div>
   </section>
+
+  <div class="categorias" id="categorias"></div>
+
+  <section class="secao" id="cardapio">
+    <h2 class="titulo">Nossos sabores</h2>
+    <div class="cards" id="lista"><p class="aviso">Carregando sabores...</p></div>
+  </section>
+
+  <div class="promo escondido" id="blocoPromo">
+    <div class="faixa">
+      <div>
+        <small id="promoTopo"></small>
+        <h2 id="promoTitulo"></h2>
+        <a class="botao" href="#cardapio">Pedir agora</a>
+      </div>
+      <img id="promoImg" src="promo.jpg" alt="" onerror="this.style.display='none'">
+    </div>
+  </div>
+
+  <div class="diferenciais">
+    <div class="dif"><i>1</i><div><b>Qualidade premium</b><span>Feito à mão, todo dia</span></div></div>
+    <div class="dif"><i>2</i><div><b>Ingredientes frescos</b><span>Selecionados com cuidado</span></div></div>
+    <div class="dif"><i>3</i><div><b>Retire rápido</b><span>Pedido pronto em minutos</span></div></div>
+    <div class="dif"><i>4</i><div><b>Pague como quiser</b><span>Pix, dinheiro e cartões</span></div></div>
+  </div>
+
+  <div class="contato" id="contato">
+    <h2>Venha nos visitar</h2>
+    <p id="lojaEndereco"></p>
+    <p id="lojaHorario"></p>
+    <a class="botao" id="lojaZap" href="#">Chamar no WhatsApp</a>
+  </div>
+
+  <footer id="lojaRodape"></footer>
 
   <div class="fundo escondido" id="painelCarrinho">
     <div class="painel">
       <button class="fechar" id="btnFechar">×</button>
-      <h2>Seu carrinho</h2>
+      <h2>Seu pedido</h2>
       <div id="itensCarrinho"></div>
       <div class="total">Total: <span id="totalCarrinho">R$ 0,00</span></div>
-
       <label>Seu nome</label>
       <input type="text" id="cNome">
       <label>Telefone (WhatsApp)</label>
@@ -38,7 +83,6 @@
         <option value="credito">Cartão de crédito</option>
         <option value="debito">Cartão de débito</option>
       </select>
-
       <button class="botao" id="btnFinalizar">Finalizar pedido</button>
       <p class="msg-pedido" id="msgPedido"></p>
     </div>
