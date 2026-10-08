@@ -9,8 +9,16 @@
   <link rel="stylesheet" href="carrinho.css">
   <link rel="stylesheet" href="dono.css">
   <link rel="stylesheet" href="pedido.css">
+  <link rel="stylesheet" href="tema.css">
 </head>
 <body>
+
+
+  <div class="moldura">
+  <img class="lateral esq" src="cone-esq.png" alt="" onerror="this.style.display='none'">
+  <img class="lateral dir" src="cone-dir.png" alt="" onerror="this.style.display='none'">
+  <div class="palco">
+    <div class="foto"></div>
   <header class="topo">
     <h1 id="lojaNome">Nome da Sorveteria</h1>
     <nav>
@@ -19,30 +27,42 @@
       <a href="#contato">Contato</a>
     </nav>
     <div class="acoes-topo">
+      <span class="icone" aria-hidden="true">⌕</span>
       <button class="btn-carrinho" id="btnAcomp">Meu pedido</button>
       <button class="btn-carrinho" id="btnAbrir">Carrinho <span id="contador">0</span></button>
+          <span class="icone" aria-hidden="true">☰</span>
     </div>
   </header>
 
-  <section class="hero" id="inicio">
-    <div class="texto">
-      <small id="heroTopo"></small>
-      <h2 id="heroTitulo"></h2>
-      <p id="heroTexto"></p>
-      <div class="botoes">
-        <a class="botao" href="#cardapio">Fazer pedido</a>
-        <a class="botao contorno" href="#cardapio">Ver sabores</a>
+    <section class="hero" id="inicio">
+      <div class="texto">
+        <small id="heroTopo"></small>
+        <h2 id="heroTitulo"></h2>
+        <p id="heroTexto"></p>
+        <div class="botoes">
+          <a class="botao contorno" href="#cardapio">Fazer pedido</a>
+          <a class="botao" href="#cardapio">Ver sabores</a>
+        </div>
       </div>
-    </div>
-    <div class="foto"></div>
-  </section>
+      <div class="direita">
+        <div class="aval">
+          <span class="pontos">⋮</span>
+          <div class="aval-topo"><span class="avatar">C</span><div><b>Cliente feliz</b><div class="estrelas">★★★★★</div></div></div>
+          <p>Sorvete cremoso e feito com carinho. Já virou nosso favorito!</p>
+        </div>
+        <div>
+          <small class="rotulo">Escolha o tipo</small>
+          <div class="categorias" id="categorias"></div>
+        </div>
+      </div>
+    </section>
 
-  <div class="categorias" id="categorias"></div>
-
-  <section class="secao" id="cardapio">
-    <h2 class="titulo">Nossos sabores</h2>
-    <div class="cards" id="lista"><p class="aviso">Carregando sabores...</p></div>
-  </section>
+    <section class="secao" id="cardapio">
+      <div class="cab-secao"><h2 class="titulo">Nossos sabores</h2><span class="em-alta">Em alta 🔥</span></div>
+      <div class="cards" id="lista"><p class="aviso">Carregando sabores...</p></div>
+    </section>
+  </div>
+  </div>
 
   <div class="promo escondido" id="blocoPromo">
     <div class="faixa">
@@ -69,7 +89,7 @@
     <a class="botao" id="lojaZap" href="#">Chamar no WhatsApp</a>
   </div>
 
-  <footer><span id="lojaRodape"></span> · <a href="#" id="btnDono">Área do dono</a></footer>
+  <footer><span><span id="lojaRodape"></span> · <a href="#" id="btnDono">Área do dono</a></span><div class="redes"><a href="#">G</a><a href="#">f</a><a href="#">ig</a><a href="#">tw</a></div></footer>
 
   <div class="fundo escondido" id="painelCarrinho">
     <div class="painel">
