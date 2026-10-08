@@ -13,14 +13,14 @@
 .passos li{display:flex;align-items:center;gap:12px;padding:10px 0;color:#aaa;font-weight:500}
 .passos li i{width:30px;height:30px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:.85rem;font-weight:700}
 .passos li.feito{color:var(--cor-texto)}
-.passos li.feito i{background:var(--cor-principal);color:#fff}
+.passos li.feito i{background:var(--cor-principal);color:var(--sobre-cor)}
 .passos li.agora{color:var(--cor-principal);font-weight:700}
 .passos li.agora i{box-shadow:0 0 0 4px var(--creme)}
 .selo-pago{display:inline-block;padding:3px 12px;border-radius:999px;font-size:.8rem;font-weight:600}
 .selo-pago.sim{background:#d8f5e0;color:#1b6b34}
 .selo-pago.nao{background:#fff1cc;color:#8a5a00}
 .ped-lista{max-width:1000px;margin:0 auto;padding:20px 6vw;display:grid;gap:16px}
-.ped{background:#fff;border:1px solid #f3d3de;border-radius:16px;padding:16px}
+.ped{background:#fff;border:1px solid var(--borda);border-radius:16px;padding:16px}
 .ped-topo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .ped-cod{font-weight:700;font-size:1.1rem}
 .badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:.78rem;font-weight:700;background:var(--creme);color:var(--cor-escura)}
@@ -32,7 +32,10 @@
 .ped-acoes .cinza{background:#999;border-color:#999}
 .ped-filtros{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:16px}
 .ped-filtros button{padding:8px 18px;border:2px solid var(--cor-principal);background:transparent;color:var(--cor-principal);border-radius:999px;font-weight:600;cursor:pointer}
-.ped-filtros button.ativo{background:var(--cor-principal);color:#fff}
-.login-box{max-width:400px;margin:40px auto;background:#fff;padding:22px;border-radius:16px;border:1px solid #f3d3de}
+.ped-filtros button.ativo{background:var(--cor-principal);color:var(--sobre-cor)}
+.login-box{max-width:400px;margin:40px auto;background:#fff;padding:22px;border-radius:16px;border:1px solid var(--borda)}
 .login-box input{width:100%;padding:10px;margin:6px 0 12px;border:1px solid #ddd;border-radius:8px}
 .escondido{display:none !important}
+.ped.atrasado{border-color:#d00;background:#fff5f5}
+.badge.atrasado{background:#d00;color:#fff}
+.ped-tempo{font-size:.8rem;color:var(--cor-suave);margin-left:6px}
