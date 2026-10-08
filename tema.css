@@ -1,76 +1,78 @@
-/* ===== TEMA "Red Flower" (só para o index.html) ===== */
-:root{--vinho:#2b0a0e;--vinho2:#4a0f19;--vidro:rgba(255,255,255,.06);--linha:rgba(255,255,255,.3)}
-body{background:#310e0c;color:#fff}
-.moldura{position:relative;max-width:1060px;margin:28px auto 0}
-.palco{position:relative;overflow:clip;background:var(--vinho);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.palco .foto{filter:none;position:absolute;inset:0;z-index:0;background:url("hero.jpg") center/cover no-repeat,radial-gradient(circle at 60% 30%,#e0204a 0,#b3123a 14%,#7a0a1e 26%,transparent 44%),radial-gradient(circle at 80% 70%,#6e0a1f 0,transparent 40%),linear-gradient(160deg,#4a0f19,#240609)}
-.palco .foto::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(32,6,10,.9) 0,rgba(32,6,10,.35) 55%,rgba(32,6,10,.6) 100%),linear-gradient(180deg,transparent 60%,var(--vinho) 100%)}
-/* topo transparente por cima do hero */
-.topo{position:relative;z-index:3;background:none;border-bottom:0;padding:18px 36px}
-.icone{color:#fff;font-size:1.2rem;padding:0 6px}
-.topo h1{color:#fff;font-size:1.15rem;display:flex;align-items:center;gap:8px}
-.topo h1::before{content:"🍦";font-size:1.5rem}
-.topo nav a{color:#fff}.topo nav a:hover{color:var(--cor-destaque)}
-.topo .btn-carrinho{background:transparent;color:#fff;border:1px solid var(--linha);border-radius:999px}
-.topo .btn-carrinho span{background:#fff;color:var(--vinho)}
-.botao{background:rgba(255,255,255,.16);border:1px solid var(--linha);color:#fff;border-radius:8px;font-weight:500}
-.botao:hover{background:rgba(255,255,255,.28);border-color:#fff}
-.botao.contorno{background:transparent;color:#fff;border-color:#fff}
-.botao.contorno:hover{background:#fff;color:var(--vinho)}
-/* hero */
-.hero{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;background:none;min-height:0;margin:0;padding:40px 36px 30px}
-.hero .texto{padding:0}
-.hero small{color:rgba(255,255,255,.75);font-weight:500;letter-spacing:.5px}
-.hero h2{font-size:clamp(2.4rem,4.6vw,3.8rem);line-height:1.05;font-weight:700;color:#fff}
-.hero h2 span{font-family:var(--fonte);font-weight:700;color:#fff;display:block}
-.hero p{color:rgba(255,255,255,.8);font-size:.85rem;max-width:380px}
-.hero .direita{display:flex;flex-direction:column;align-items:flex-end;gap:22px}
-.aval{width:250px;background:#fff;color:#2b0a0e;border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-.aval-topo{display:flex;align-items:center;gap:10px}
-.avatar{width:32px;height:32px;border-radius:50%;background:#f2a33a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
-.aval b{font-size:.85rem;display:block}.estrelas{color:#f5a623;font-size:.8rem;letter-spacing:1px}
-.aval p{color:#4a2a2f;font-size:.74rem;margin:8px 0 0}
-.rotulo{color:#fff;font-size:.78rem}
-.hero .categorias{padding:0;gap:10px;justify-content:flex-end}
-.hero .cat span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.hero .cat .bola{width:38px;height:38px;margin:0;font-size:.9rem;background:rgba(255,255,255,.12);border:1px solid var(--linha);color:#fff}
-.hero .cat.ativo .bola{background:#fff;color:var(--vinho);border-color:#fff}
-.lateral{position:absolute;pointer-events:none}
-.lateral.esq{left:-120px;top:300px;width:150px;z-index:4}.lateral.dir{right:-100px;top:340px;width:130px;z-index:4}
-@media(max-width:1300px){.lateral{display:none}}
-.pontos{position:absolute;right:-14px;top:6px;color:#fff;font-size:1.1rem}.aval{position:relative}
+/* ===== TEMA "Sorveteria" (só index.html) — cores vêm do painel do dono ===== */
+:root{--c1:#ff9f1c;--c2:#e63946;--fundo:#fdf1dc;--texto:#3b2417;--sobre2:#fff}
+body{background:var(--fundo);color:var(--texto)}
+.dst{color:var(--c1)}.dst:nth-of-type(even){color:var(--c2)}
+/* animação ao rolar */
+.js .rev{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease;transition-delay:var(--d,0s)}
+.js .rev-esq{transform:translateX(-70px)}.js .rev-dir{transform:translateX(70px)}.js .anel.rev{transform:scale(.5)}
+.js .rev.vis{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.js .rev{opacity:1;transform:none;transition:none}}
+/* topo */
+.topo{background:var(--fundo);border-bottom:1px solid rgba(0,0,0,.06)}
+.topo h1{color:var(--c2);font-weight:700}
+.topo nav a{color:var(--texto)}.topo nav a:hover{color:var(--c1)}
+.topo .btn-carrinho{background:var(--c1);color:var(--sobre-cor);border-radius:999px;font-weight:600}
+.topo .btn-carrinho span{background:var(--texto);color:var(--fundo)}
+/* botões */
+.botao{background:var(--c1);border:2px solid var(--c1);color:var(--sobre-cor);border-radius:999px;font-weight:600}
+.botao:hover{filter:brightness(.93);background:var(--c1);border-color:var(--c1)}
+.botao.contorno{background:transparent;color:var(--texto);border-color:var(--texto)}
+.botao.contorno:hover{background:var(--texto);color:var(--fundo)}
+.pilula{display:inline-flex;align-items:center;border:2px solid var(--texto);border-radius:999px;padding:3px;text-decoration:none;color:var(--texto);background:var(--fundo)}
+.pilula .setas{background:var(--c1);color:var(--sobre-cor);border-radius:999px;padding:4px 18px;font-weight:700;letter-spacing:-2px}
+.pilula .txt{padding:0 20px 0 14px;font-weight:700}
+/* seção 1 */
+.s1{position:relative;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:20px;min-height:88vh;padding:60px 6vw 90px;max-width:1300px;margin:0 auto}
+.anel{position:absolute;border-radius:50%;z-index:0}
+.anel.a{background:var(--c1);width:min(46vw,560px);aspect-ratio:1;right:4%;top:8%}
+.anel.b{border:70px solid var(--c2);width:330px;height:330px;left:-110px;bottom:-110px}
+.anel.c{border:60px solid var(--c1);width:290px;height:290px;right:-90px;bottom:-100px}
+.s1-txt,.s1-foto{position:relative;z-index:1}
+.s1 h2,.s2 h2{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.12;font-weight:700;max-width:8.5em;margin-bottom:22px}
+.s1 p,.s2 p{max-width:430px;margin:0 0 22px;font-size:1.02rem}
+.chamada{font-weight:600;margin-top:26px !important}
+.chamada .dst,.s2 p .dst{font-weight:700}
+.s1-foto{display:flex;justify-content:flex-end}
+.s1-foto img{max-height:560px;width:auto;filter:drop-shadow(0 22px 28px rgba(0,0,0,.28))}
+svg.arte{max-height:540px;width:auto;filter:drop-shadow(0 22px 28px rgba(0,0,0,.25))}
+/* seção 2 */
+.s2{position:relative;overflow:hidden;background:var(--c1);display:grid;grid-template-columns:1fr 1fr;align-items:center;min-height:86vh;padding:60px 6vw}
+.curva{position:absolute;z-index:0;right:0;top:0;bottom:0;width:58%;background:var(--fundo);border-radius:45% 0 0 45% / 50% 0 0 50%}
+.canto{position:absolute;z-index:0;right:-16%;bottom:-38%;width:46%;aspect-ratio:1;border-radius:50%;background:var(--c2)}
+.s2-foto,.s2-txt{position:relative;z-index:1}
+.s2-foto img,.s2-foto svg{max-height:540px;width:auto;max-width:100%}
+.s2-txt{padding-left:6vw}
+.redes-linha{font-size:.85rem;font-weight:500;margin-top:30px;display:flex;flex-direction:column;gap:2px}
 /* cardápio */
-.secao{position:relative;z-index:2;padding:10px 36px 50px}
-.cab-secao{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.secao h2.titulo{font-size:1.1rem;font-weight:600;margin:0;color:#fff}
-.em-alta{background:#fff;color:var(--vinho);border-radius:999px;padding:5px 14px;font-weight:600;font-size:.8rem}
-.cards{grid-template-columns:repeat(2,1fr);gap:22px}
-.card{flex-direction:row;flex-wrap:wrap;align-items:center;gap:16px;padding:18px 20px;background:var(--vidro);backdrop-filter:blur(8px);border:1px solid var(--linha);border-radius:14px;color:#fff;overflow:visible;min-height:140px}
-.card.destaque{background:#fff;color:var(--vinho);border-color:#fff}
-.card img,.card .sem-foto{width:96px;height:96px;aspect-ratio:auto;object-fit:cover;border-radius:12px;flex:none}
-.card .sem-foto{background:rgba(255,255,255,.1);color:#fff}
-.card.destaque .sem-foto{background:#f6e3e6;color:var(--vinho)}
-.card .conteudo{padding:0;flex:1;min-width:0;gap:3px}
-.card h3{font-size:1rem;font-weight:600}
-.card p{color:inherit;opacity:.7;font-size:.74rem;min-height:0}
-.card .rot{font-size:.68rem;opacity:.85;margin-top:4px}
-.chips{display:flex;gap:8px;margin:2px 0 6px}
-.chip{padding:3px 12px;border:1px solid currentColor;border-radius:4px;background:transparent;color:inherit;font:500 .68rem var(--fonte);opacity:.6;cursor:pointer}
-.chip.on{opacity:1;background:rgba(255,255,255,.2)}.card.destaque .chip.on{background:rgba(43,10,14,.1)}
-.card .linha{display:flex;justify-content:space-between;align-items:center}
-.card .preco{margin:0;color:inherit;font-size:.95rem;font-weight:600}
-.passo{display:inline-flex;align-items:center;gap:4px;border:1px solid currentColor;border-radius:6px;padding:1px 4px;font-size:.78rem}
-.passo button{background:none;border:0;color:inherit;font-size:1rem;cursor:pointer;width:20px}
-.card.esgotado{opacity:.5}
-.card .dono-acoes{flex-basis:100%;padding:8px 0 0}
+.secao h2.titulo{text-align:center;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;margin-bottom:6px}
+.categorias{padding:20px 6vw 6px;gap:10px}
+.cat{display:flex;align-items:center;gap:8px;padding:5px 18px 5px 5px;border-radius:999px;background:#fff;box-shadow:0 4px 14px rgba(59,36,23,.08);color:#3b2417}
+.cat .bola{width:36px;height:36px;margin:0;font-size:.9rem;border:0;background:rgba(0,0,0,.06);color:var(--c1)}
+.cat.ativo{background:var(--c1);color:var(--sobre-cor)}.cat.ativo .bola{border:0;color:var(--texto);background:rgba(255,255,255,.55)}
+.card{background:#fff;color:#3b2417;border:0;border-radius:24px;box-shadow:0 10px 30px rgba(59,36,23,.09)}
+.card.destaque{outline:3px solid var(--c1)}
+.card .sem-foto{background:rgba(0,0,0,.05);color:var(--c1)}
+.card p{color:#7a5c52}
+.card .preco{margin:0;color:var(--c2);font-weight:700}
+.card .linha{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.passo{display:inline-flex;align-items:center;gap:8px}
+.passo button{width:30px;height:30px;border:0;border-radius:50%;background:var(--c1);color:var(--sobre-cor);font-size:1.1rem;cursor:pointer}
+.passo .n{font-weight:700;min-width:16px;text-align:center}
 /* demais blocos */
-.promo .faixa{background:var(--vidro);border:1px solid var(--linha)}
-.promo small{color:var(--cor-destaque)}
-.dif i{background:rgba(255,255,255,.1);color:#fff}.dif span{color:rgba(255,255,255,.65)}
-.contato{background:rgba(0,0,0,.25)}.contato p{color:rgba(255,255,255,.7)}
-footer{background:#1c0508;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:18px 6vw}
-.redes{display:flex;gap:10px}.redes a{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--vinho);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;text-decoration:none}
-/* painéis brancos continuam legíveis */
+.promo .faixa{background:var(--c2);color:var(--sobre2);border-radius:28px}
+.promo small{color:var(--fundo);font-family:var(--fonte);font-weight:600}
+.promo .botao{background:var(--fundo);border-color:var(--fundo);color:var(--texto)}
+.dif i{background:var(--c1);color:var(--sobre-cor)}.dif span{color:#7a5c52}
+.contato{background:var(--c1);color:var(--sobre-cor)}.contato p{color:inherit;opacity:.85}
+.contato .botao{background:var(--texto);border-color:var(--texto);color:var(--fundo)}
+footer{background:var(--texto);color:var(--fundo);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:18px 6vw}
+footer a{color:var(--c1)}
 .painel{color:#3b1f14;--cor-texto:#3b1f14;--cor-suave:#7a5c52}
-.painel .botao{background:var(--cor-principal);color:var(--sobre-cor);border-color:var(--cor-principal)}
-@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:120px}.hero .direita{align-items:flex-start}.hero .categorias{justify-content:flex-start}.cards{grid-template-columns:1fr}.lateral{display:none}.topo{padding:14px 18px}.hero,.secao{padding-left:18px;padding-right:18px}}
+@media(max-width:820px){
+ .s1,.s2{grid-template-columns:1fr;min-height:0}
+ .s1-foto{justify-content:center}.s1-foto img,svg.arte{max-height:380px}
+ .anel.a{width:80vw;right:-20%;top:46%}
+ .curva,.canto{display:none}
+ .s2{padding:0}.s2-foto{padding:40px 6vw 0;text-align:center}.s2-foto img,.s2-foto svg{max-height:320px}
+ .s2-txt{background:var(--fundo);padding:40px 6vw}
+}
