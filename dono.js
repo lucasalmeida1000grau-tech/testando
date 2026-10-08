@@ -153,7 +153,10 @@ async function salvarSite(v) {
     nome: v.nome, endereco: v.endereco, horario: v.horario, whatsapp: v.whatsapp,
     heroTopo: v.heroTopo, heroTitulo: v.heroTitulo, heroDestaque: v.heroDestaque,
     heroTexto: v.heroTexto, promoAtiva: v.promoAtiva,
-    promoTopo: v.promoTopo, promoTitulo: v.promoTitulo
+    promoTopo: v.promoTopo, promoTitulo: v.promoTitulo,
+    pixChave: v.pixChave, pixNome: v.pixNome, pixCidade: v.pixCidade,
+    taxaEntrega: v.taxaEntrega || 0,
+    corPrincipal: corValida(v.corPrincipal) ? v.corPrincipal : LOJA.corPrincipal
   });
   if (v.heroFoto) novo.heroFoto = await enviarFoto(v.heroFoto);
   if (v.promoFoto) novo.promoFoto = await enviarFoto(v.promoFoto);
@@ -179,7 +182,12 @@ function editarSite() {
     { id: "promoAtiva", rotulo: "Mostrar a promoção", tipo: "checkbox", valor: LOJA.promoAtiva },
     { id: "promoTopo", rotulo: "Promoção: frase pequena", tipo: "text", valor: LOJA.promoTopo },
     { id: "promoTitulo", rotulo: "Promoção: título", tipo: "text", valor: LOJA.promoTitulo },
-    { id: "promoFoto", rotulo: "Promoção: foto (trocar)", tipo: "file" }
+    { id: "promoFoto", rotulo: "Promoção: foto (trocar)", tipo: "file" },
+    { id: "corPrincipal", rotulo: "Cor do aplicativo", tipo: "color", valor: corValida(LOJA.corPrincipal) ? LOJA.corPrincipal : COR_PADRAO },
+    { id: "taxaEntrega", rotulo: "Taxa de entrega (R$)", tipo: "number", valor: LOJA.taxaEntrega },
+    { id: "pixChave", rotulo: "Chave Pix (CPF, CNPJ, e-mail, telefone ou aleatória)", tipo: "text", valor: LOJA.pixChave },
+    { id: "pixNome", rotulo: "Nome do recebedor do Pix (como no banco)", tipo: "text", valor: LOJA.pixNome },
+    { id: "pixCidade", rotulo: "Cidade do recebedor do Pix", tipo: "text", valor: LOJA.pixCidade }
   ], salvarSite);
 }
 
