@@ -1,158 +1,206 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sorveteria</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="carrinho.css">
-  <link rel="stylesheet" href="dono.css">
-  <link rel="stylesheet" href="pedido.css">
-</head>
-<body>
-  <header class="topo">
-    <h1 id="lojaNome">Nome da Sorveteria</h1>
-    <nav>
-      <a href="#inicio">Início</a>
-      <a href="#cardapio">Cardápio</a>
-      <a href="#contato">Contato</a>
-    </nav>
-    <div class="acoes-topo">
-      <button class="btn-carrinho" id="btnAcomp">Meu pedido</button>
-      <button class="btn-carrinho" id="btnAbrir">Carrinho <span id="contador">0</span></button>
-    </div>
-  </header>
+// ===== DADOS PADRÃO DA LOJA (o dono pode mudar pelo site) =====
+var LOJA = {
+  nome: "Nome da Sorveteria",
+  endereco: "Rua Exemplo, 123 - São Paulo/SP",
+  horario: "Todos os dias, das 12h às 22h",
+  whatsapp: "5511999999999",
+  heroTopo: "Momentos doces, felicidade em cada bola",
+  heroTitulo: "A vida é melhor com",
+  heroDestaque: "sorvete",
+  heroTexto: "Cremoso, saboroso e feito com ingredientes frescos. Escolha o seu e retire na loja.",
+  heroFoto: "",
+  promoAtiva: true,
+  promoTopo: "Oferta especial",
+  promoTitulo: "Compre 2 bolas, leve 3",
+  promoFoto: ""
+};
+// ==============================================================
 
-  <section class="hero" id="inicio">
-    <div class="texto">
-      <small id="heroTopo"></small>
-      <h2 id="heroTitulo"></h2>
-      <p id="heroTexto"></p>
-      <div class="botoes">
-        <a class="botao" href="#cardapio">Fazer pedido</a>
-        <a class="botao contorno" href="#cardapio">Ver sabores</a>
-      </div>
-    </div>
-    <div class="foto"></div>
-  </section>
+var COLUNAS = "id,nome,descricao,preco,foto_url,categoria,destaque,disponivel";
+var sabores = [];
+var categoriaAtual = "Todos";
+var jaVisto = {};
+var DONO = false;
 
-  <div class="categorias" id="categorias"></div>
+function erroNaTela(t) {
+  var l = document.getElementById("lista");
+  if (l) l.innerHTML = '<p class="aviso">Erro: ' + t + "</p>";
+}
 
-  <section class="secao" id="cardapio">
-    <h2 class="titulo">Nossos sabores</h2>
-    <div class="cards" id="lista"><p class="aviso">Carregando sabores...</p></div>
-  </section>
+function txt(id, v) {
+  var e = document.getElementById(id);
+  if (e) e.textContent = v;
+}
 
-  <div class="promo escondido" id="blocoPromo">
-    <div class="faixa">
-      <div>
-        <small id="promoTopo"></small>
-        <h2 id="promoTitulo"></h2>
-        <a class="botao" href="#cardapio">Pedir agora</a>
-      </div>
-      <img id="promoImg" src="promo.jpg" alt="" onerror="this.style.display='none'">
-    </div>
-  </div>
+function preencherLoja() {
+  document.title = LOJA.nome;
+  txt("lojaNome", LOJA.nome);
+  txt("lojaEndereco", LOJA.endereco);
+  txt("lojaHorario", LOJA.horario);
+  txt("lojaRodape", "© " + new Date().getFullYear() + " " + LOJA.nome);
+  txt("heroTopo", LOJA.heroTopo);
+  txt("heroTexto", LOJA.heroTexto);
 
-  <div class="diferenciais">
-    <div class="dif"><i>1</i><div><b>Qualidade premium</b><span>Feito à mão, todo dia</span></div></div>
-    <div class="dif"><i>2</i><div><b>Ingredientes frescos</b><span>Selecionados com cuidado</span></div></div>
-    <div class="dif"><i>3</i><div><b>Retire ou receba</b><span>Você escolhe como quer</span></div></div>
-    <div class="dif"><i>4</i><div><b>Pague como quiser</b><span>Pix, dinheiro e cartões</span></div></div>
-  </div>
+  var z = document.getElementById("lojaZap");
+  if (z) z.href = "https://wa.me/" + LOJA.whatsapp;
 
-  <div class="contato" id="contato">
-    <h2>Venha nos visitar</h2>
-    <p id="lojaEndereco"></p>
-    <p id="lojaHorario"></p>
-    <a class="botao" id="lojaZap" href="#">Chamar no WhatsApp</a>
-  </div>
+  var h = document.getElementById("heroTitulo");
+  if (h) {
+    h.textContent = LOJA.heroTitulo + " ";
+    var s = document.createElement("span");
+    s.textContent = LOJA.heroDestaque;
+    h.appendChild(s);
+  }
 
-  <footer><span id="lojaRodape"></span> · <a href="#" id="btnDono">Área do dono</a></footer>
+  var f = document.querySelector(".hero .foto");
+  if (f && LOJA.heroFoto) f.style.backgroundImage = 'url("' + LOJA.heroFoto + '")';
 
-  <div class="fundo escondido" id="painelCarrinho">
-    <div class="painel">
-      <button class="fechar" id="btnFechar">×</button>
+  var bp = document.getElementById("blocoPromo");
+  if (bp) {
+    if (LOJA.promoAtiva) bp.classList.remove("escondido");
+    else bp.classList.add("escondido");
+    txt("promoTopo", LOJA.promoTopo);
+    txt("promoTitulo", LOJA.promoTitulo);
+    var pi = document.getElementById("promoImg");
+    if (pi && LOJA.promoFoto) { pi.src = LOJA.promoFoto; pi.style.display = ""; }
+  }
+}
 
-      <div id="vCarrinho">
-        <h2>Seu pedido</h2>
-        <div id="itensCarrinho"></div>
+var observador = new IntersectionObserver(function (entradas) {
+  entradas.forEach(function (e) {
+    if (!e.isIntersecting) return;
+    var id = e.target.dataset.id;
+    if (jaVisto[id]) return;
+    jaVisto[id] = true;
+    db.from("visitas").insert({ sabor_id: id }).then(function () {});
+  });
+}, { threshold: 0.6 });
 
-        <label>Como quer receber?</label>
-        <select id="cTipo">
-          <option value="retirada">Retirar na loja</option>
-          <option value="entrega">Entrega</option>
-        </select>
-        <div id="boxEndereco" class="escondido">
-          <label>Endereço de entrega</label>
-          <textarea id="cEndereco" rows="2" placeholder="Rua, número, bairro e complemento"></textarea>
-        </div>
+function criarCard(s) {
+  var card = document.createElement("div");
+  card.className = "card" + (s.disponivel ? "" : " esgotado");
+  card.dataset.id = s.id;
 
-        <label>Seu nome</label>
-        <input type="text" id="cNome">
-        <label>Telefone (WhatsApp)</label>
-        <input type="tel" id="cTelefone" placeholder="(11) 99999-9999">
+  if (s.destaque && s.disponivel) {
+    var selo = document.createElement("span");
+    selo.className = "selo";
+    selo.textContent = "Destaque";
+    card.appendChild(selo);
+  }
 
-        <label>Forma de pagamento</label>
-        <select id="cPagamento">
-          <option value="pix">Pix</option>
-          <option value="dinheiro">Dinheiro</option>
-          <option value="credito">Cartão de crédito</option>
-          <option value="debito">Cartão de débito</option>
-        </select>
+  if (s.foto_url) {
+    var img = document.createElement("img");
+    img.src = s.foto_url;
+    img.alt = s.nome;
+    img.loading = "lazy";
+    card.appendChild(img);
+  } else {
+    var sf = document.createElement("div");
+    sf.className = "sem-foto";
+    sf.textContent = s.nome.charAt(0).toUpperCase();
+    card.appendChild(sf);
+  }
 
-        <label>Observação (opcional)</label>
-        <input type="text" id="cObs" placeholder="Ex: sem granulado">
+  var box = document.createElement("div");
+  box.className = "conteudo";
 
-        <div class="resumo">
-          <div><span>Subtotal</span><span id="subCarrinho">R$ 0,00</span></div>
-          <div id="linhaTaxa" class="escondido"><span>Entrega</span><span id="taxaCarrinho">R$ 0,00</span></div>
-          <div class="total"><span>Total</span><span id="totalCarrinho">R$ 0,00</span></div>
-        </div>
+  var nome = document.createElement("h3");
+  nome.textContent = s.nome;
+  var desc = document.createElement("p");
+  desc.textContent = s.descricao || "";
+  var preco = document.createElement("span");
+  preco.className = "preco";
+  preco.textContent = dinheiro(s.preco);
 
-        <button class="botao" id="btnFinalizar" style="width:100%">Finalizar pedido</button>
-        <p class="msg-pedido" id="msgPedido"></p>
-      </div>
+  var botao = document.createElement("button");
+  botao.className = "botao";
+  if (s.disponivel) {
+    botao.textContent = "Adicionar ao pedido";
+    botao.onclick = function () { adicionarAoCarrinho(s); };
+  } else {
+    botao.textContent = "Esgotado";
+    botao.disabled = true;
+  }
 
-      <div id="vConfirma" class="escondido">
-        <h2>Pedido enviado!</h2>
-        <p class="cod">Código: <b id="confCodigo"></b></p>
-        <p id="confResumo"></p>
+  box.appendChild(nome);
+  box.appendChild(desc);
+  box.appendChild(preco);
+  box.appendChild(botao);
+  card.appendChild(box);
 
-        <div id="boxPix" class="pixbox escondido">
-          <h3>Pague com Pix</h3>
-          <p>Chave Pix: <b id="pixChave"></b></p>
-          <p>Valor: <b id="pixValor"></b></p>
-          <label>Pix copia e cola</label>
-          <textarea id="pixCopia" rows="3" readonly></textarea>
-          <button class="botao" id="btnCopiar" style="width:100%">Copiar código Pix</button>
-          <p class="peq">Depois de pagar, a loja confirma o pagamento e o seu pedido segue para o preparo.</p>
-        </div>
+  if (DONO) card.appendChild(barraCard(s));
 
-        <button class="botao" id="btnIrAcomp" style="width:100%;margin-top:12px">Acompanhar pedido</button>
-      </div>
-    </div>
-  </div>
+  observador.observe(card);
+  return card;
+}
 
-  <div class="fundo escondido" id="painelAcomp">
-    <div class="painel">
-      <button class="fechar" id="btnFecharAcomp">×</button>
-      <h2>Acompanhar pedido</h2>
-      <label>Código do pedido</label>
-      <input type="text" id="aCodigo">
-      <label>Seu telefone</label>
-      <input type="tel" id="aTelefone">
-      <button class="botao" id="btnConsultar" style="width:100%">Ver andamento</button>
-      <div id="resultadoAcomp"></div>
-    </div>
-  </div>
+function montarCategorias() {
+  var box = document.getElementById("categorias");
+  if (!box) return;
+  box.innerHTML = "";
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="carrinho.js"></script>
-  <script src="acompanhar.js"></script>
-  <script src="app.js"></script>
-  <script src="dono.js"></script>
-</body>
-</html>
+  var nomes = ["Todos"];
+  sabores.forEach(function (s) {
+    if (s.categoria && nomes.indexOf(s.categoria) === -1) nomes.push(s.categoria);
+  });
+  if (nomes.length < 3) return;
+
+  nomes.forEach(function (c) {
+    var b = document.createElement("button");
+    b.className = "cat" + (c === categoriaAtual ? " ativo" : "");
+
+    var bola = document.createElement("div");
+    bola.className = "bola";
+    var ex = sabores.find(function (s) {
+      return s.foto_url && (c === "Todos" || s.categoria === c);
+    });
+    if (ex) {
+      var i = document.createElement("img");
+      i.src = ex.foto_url;
+      i.alt = "";
+      bola.appendChild(i);
+    } else {
+      bola.textContent = c.charAt(0).toUpperCase();
+    }
+
+    var l = document.createElement("span");
+    l.textContent = c;
+    b.appendChild(bola);
+    b.appendChild(l);
+    b.onclick = function () {
+      categoriaAtual = c;
+      montarCategorias();
+      mostrar();
+    };
+    box.appendChild(b);
+  });
+}
+
+function mostrar() {
+  var lista = document.getElementById("lista");
+  if (!lista) return;
+  var itens = sabores.filter(function (s) {
+    return categoriaAtual === "Todos" || s.categoria === categoriaAtual;
+  });
+  lista.innerHTML = "";
+  if (itens.length === 0) {
+    lista.innerHTML = '<p class="aviso">Nenhum sabor cadastrado ainda.</p>';
+    return;
+  }
+  itens.forEach(function (s) { lista.appendChild(criarCard(s)); });
+}
+
+async function carregar() {
+  var c = await db.from("config_loja").select("dados").eq("id", 1).maybeSingle();
+  if (c.data && c.data.dados) Object.assign(LOJA, c.data.dados);
+  preencherLoja();
+
+  var r = await db.from("sabores").select(COLUNAS)
+    .order("destaque", { ascending: false }).order("nome");
+  if (r.error) { erroNaTela(r.error.message); return; }
+  sabores = r.data;
+  montarCategorias();
+  mostrar();
+}
+
+carregar().catch(function (e) { erroNaTela(e.message); });
