@@ -1,0 +1,10 @@
+#barraDono{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:8px 12px;background:#3b1f14;color:#fff;font-size:.85rem}
+#barraDono button{padding:7px 14px;font-size:.8rem}
+.modo-dono .topo{top:48px}
+.dono-acoes{display:flex;gap:6px;padding:0 14px 14px}
+.dono-acoes button{flex:1;padding:8px;font-size:.78rem}
+.dono-acoes .perigo{background:#c0392b;border-color:#c0392b}
+.painel textarea{width:100%;padding:10px;margin:6px 0 12px;border:1px solid #ddd;border-radius:8px;font:inherit}
+.painel input[type=checkbox]{width:auto;margin:0}
+.painel .check{display:flex;align-items:center;gap:8px;margin:6px 0 12px}
+footer a{color:#e6cfc6}
