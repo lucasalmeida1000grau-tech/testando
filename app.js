@@ -272,17 +272,45 @@ function mostrar() {
   atualizarQtds();
 }
 
+// ---- cache: na próxima visita tudo aparece na hora, sem esperar o banco ----
+var CHAVES_CACHE = ["nome","endereco","horario","whatsapp","heroTitulo","heroDestaque","heroTexto","heroBotao","heroChamada","heroFoto",
+  "secTitulo","secTexto","secBotao","secFoto","tituloCardapio","instagram","site","promoAtiva","promoTopo","promoTitulo","promoFoto",
+  "cor1","cor2","corFundo","corTexto"];
+var saboresCache = "";
+function guardarCache() {
+  try {
+    var o = {};
+    CHAVES_CACHE.forEach(function (k) { o[k] = LOJA[k]; });
+    localStorage.setItem("lojaCache", JSON.stringify(o));
+  } catch (e) {}
+}
+function aplicarCache() {
+  try {
+    var c = JSON.parse(localStorage.getItem("lojaCache"));
+    if (c) { Object.assign(LOJA, c); preencherLoja(); }
+    saboresCache = localStorage.getItem("saboresCache") || "";
+    if (saboresCache) { sabores = JSON.parse(saboresCache); montarCategorias(); mostrar(); }
+  } catch (e) {}
+}
+
 async function carregar() {
   var c = await db.from("config_loja").select("dados").eq("id", 1).maybeSingle();
   if (c.data && c.data.dados) Object.assign(LOJA, c.data.dados);
   preencherLoja();
+  guardarCache();
 
   var r = await db.from("sabores").select(COLUNAS)
     .order("destaque", { ascending: false }).order("nome");
   if (r.error) { erroNaTela(r.error.message); return; }
+  var novo = JSON.stringify(r.data);
   sabores = r.data;
-  montarCategorias();
-  mostrar();
+  if (novo !== saboresCache || DONO) {
+    montarCategorias();
+    mostrar();
+  }
+  saboresCache = novo;
+  try { localStorage.setItem("saboresCache", novo); } catch (e) {}
 }
 
+aplicarCache();
 carregar().catch(function (e) { erroNaTela(e.message); });
