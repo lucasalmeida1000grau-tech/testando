@@ -12,7 +12,12 @@ var LOJA = {
   promoAtiva: true,
   promoTopo: "Oferta especial",
   promoTitulo: "Compre 2 bolas, leve 3",
-  promoFoto: ""
+  promoFoto: "",
+  pixChave: "",
+  pixNome: "",
+  pixCidade: "",
+  taxaEntrega: 0,
+  corPrincipal: "#d6336c"
 };
 // ==============================================================
 
@@ -33,6 +38,7 @@ function txt(id, v) {
 }
 
 function preencherLoja() {
+  aplicarCor(LOJA.corPrincipal);
   document.title = LOJA.nome;
   txt("lojaNome", LOJA.nome);
   txt("lojaEndereco", LOJA.endereco);
