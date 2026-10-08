@@ -148,17 +148,19 @@ function barraCard(s) {
 
 /* ---------- Textos e fotos do site ---------- */
 
+var CAMPOS_TEXTO = ["nome","endereco","horario","whatsapp","heroTitulo","heroTexto","heroBotao","heroChamada",
+  "secTitulo","secTexto","secBotao","tituloCardapio","instagram","site","promoTopo","promoTitulo","pixChave","pixNome","pixCidade"];
+
 async function salvarSite(v) {
-  var novo = Object.assign({}, LOJA, {
-    nome: v.nome, endereco: v.endereco, horario: v.horario, whatsapp: v.whatsapp,
-    heroTopo: v.heroTopo, heroTitulo: v.heroTitulo, heroDestaque: v.heroDestaque,
-    heroTexto: v.heroTexto, promoAtiva: v.promoAtiva,
-    promoTopo: v.promoTopo, promoTitulo: v.promoTitulo,
-    pixChave: v.pixChave, pixNome: v.pixNome, pixCidade: v.pixCidade,
-    taxaEntrega: v.taxaEntrega || 0,
-    corPrincipal: corValida(v.corPrincipal) ? v.corPrincipal : LOJA.corPrincipal
-  });
+  var novo = Object.assign({}, LOJA);
+  CAMPOS_TEXTO.forEach(function (k) { novo[k] = v[k]; });
+  novo.heroDestaque = "";
+  novo.promoAtiva = v.promoAtiva;
+  novo.taxaEntrega = v.taxaEntrega || 0;
+  ["cor1", "cor2", "corFundo", "corTexto"].forEach(function (k) { if (corValida(v[k])) novo[k] = v[k]; });
+  novo.corPrincipal = novo.cor1;
   if (v.heroFoto) novo.heroFoto = await enviarFoto(v.heroFoto);
+  if (v.secFoto) novo.secFoto = await enviarFoto(v.secFoto);
   if (v.promoFoto) novo.promoFoto = await enviarFoto(v.promoFoto);
 
   var r = await db.from("config_loja").upsert({ id: 1, dados: novo }).select();
@@ -169,26 +171,50 @@ async function salvarSite(v) {
 }
 
 function editarSite() {
+  var c = function (k, d) { return corValida(LOJA[k]) ? LOJA[k] : d; };
   abrirForm("Editar o site", [
     { id: "nome", rotulo: "Nome da sorveteria", tipo: "text", valor: LOJA.nome },
     { id: "endereco", rotulo: "Endereço", tipo: "text", valor: LOJA.endereco },
     { id: "horario", rotulo: "Horário", tipo: "text", valor: LOJA.horario },
     { id: "whatsapp", rotulo: "WhatsApp (só números, com 55 e DDD)", tipo: "text", valor: LOJA.whatsapp },
-    { id: "heroTopo", rotulo: "Frase pequena do topo", tipo: "text", valor: LOJA.heroTopo },
-    { id: "heroTitulo", rotulo: "Título do topo", tipo: "text", valor: LOJA.heroTitulo },
-    { id: "heroDestaque", rotulo: "Palavra em destaque (cursiva)", tipo: "text", valor: LOJA.heroDestaque },
-    { id: "heroTexto", rotulo: "Texto do topo", tipo: "textarea", valor: LOJA.heroTexto },
-    { id: "heroFoto", rotulo: "Foto do topo (trocar)", tipo: "file" },
+    { id: "cor1", rotulo: "COR 1 (círculos, botões, destaques)", tipo: "color", valor: c("cor1", "#ff9f1c") },
+    { id: "cor2", rotulo: "COR 2 (anel, segundo destaque, promoção)", tipo: "color", valor: c("cor2", "#e63946") },
+    { id: "corFundo", rotulo: "COR do fundo", tipo: "color", valor: c("corFundo", "#fdf1dc") },
+    { id: "corTexto", rotulo: "COR dos textos", tipo: "color", valor: c("corTexto", "#3b2417") },
+    { id: "heroTitulo", rotulo: "Tela 1: título (coloque *asteriscos* nas palavras coloridas)", tipo: "textarea", valor: LOJA.heroTitulo },
+    { id: "heroTexto", rotulo: "Tela 1: texto", tipo: "textarea", valor: LOJA.heroTexto },
+    { id: "heroBotao", rotulo: "Tela 1: texto do botão", tipo: "text", valor: LOJA.heroBotao },
+    { id: "heroChamada", rotulo: "Tela 1: frase final (*asteriscos* = colorido)", tipo: "text", valor: LOJA.heroChamada },
+    { id: "heroFoto", rotulo: "Tela 1: foto (trocar) — ideal PNG sem fundo", tipo: "file" },
+    { id: "secTitulo", rotulo: "Tela 2: título (*asteriscos* = colorido)", tipo: "textarea", valor: LOJA.secTitulo },
+    { id: "secTexto", rotulo: "Tela 2: texto", tipo: "textarea", valor: LOJA.secTexto },
+    { id: "secBotao", rotulo: "Tela 2: texto do botão", tipo: "text", valor: LOJA.secBotao },
+    { id: "secFoto", rotulo: "Tela 2: foto (trocar)", tipo: "file" },
+    { id: "instagram", rotulo: "Instagram (aparece na tela 2 e pode ser o que quiser)", tipo: "text", valor: LOJA.instagram },
+    { id: "site", rotulo: "Endereço do site", tipo: "text", valor: LOJA.site },
+    { id: "tituloCardapio", rotulo: "Título do cardápio (*asteriscos* = colorido)", tipo: "text", valor: LOJA.tituloCardapio },
     { id: "promoAtiva", rotulo: "Mostrar a promoção", tipo: "checkbox", valor: LOJA.promoAtiva },
     { id: "promoTopo", rotulo: "Promoção: frase pequena", tipo: "text", valor: LOJA.promoTopo },
     { id: "promoTitulo", rotulo: "Promoção: título", tipo: "text", valor: LOJA.promoTitulo },
     { id: "promoFoto", rotulo: "Promoção: foto (trocar)", tipo: "file" },
-    { id: "corPrincipal", rotulo: "Cor do aplicativo", tipo: "color", valor: corValida(LOJA.corPrincipal) ? LOJA.corPrincipal : COR_PADRAO },
     { id: "taxaEntrega", rotulo: "Taxa de entrega (R$)", tipo: "number", valor: LOJA.taxaEntrega },
     { id: "pixChave", rotulo: "Chave Pix (CPF, CNPJ, e-mail, telefone ou aleatória)", tipo: "text", valor: LOJA.pixChave },
     { id: "pixNome", rotulo: "Nome do recebedor do Pix (como no banco)", tipo: "text", valor: LOJA.pixNome },
     { id: "pixCidade", rotulo: "Cidade do recebedor do Pix", tipo: "text", valor: LOJA.pixCidade }
   ], salvarSite);
+
+  // prévia ao vivo: ao escolher uma cor, o site já muda
+  var ids = ["cor1", "cor2", "corFundo", "corTexto"];
+  ids.forEach(function (k) {
+    document.getElementById("f_" + k).oninput = function () {
+      var o = {};
+      ids.forEach(function (j) { o[j] = document.getElementById("f_" + j).value; });
+      aplicarCores(o);
+    };
+  });
+  // se fechar sem salvar, volta às cores salvas
+  var x = document.querySelector("#formDono .fechar");
+  if (x) x.addEventListener("click", function () { aplicarCores(LOJA); });
 }
 
 /* ---------- Login e modo dono ---------- */
