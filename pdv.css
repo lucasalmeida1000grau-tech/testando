@@ -5,7 +5,7 @@
 #busca { font-size: 1.2rem; border: 2px solid var(--cor-principal); }
 .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 .prod { background: #fff; border: none; border-radius: 12px; padding: 14px; text-align: left; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-.prod:hover { background: #ffe9f0; }
+.prod:hover { background: var(--creme); }
 .prod b { display: block; }
 .prod small { color: var(--cor-escura); font-weight: 700; }
 .venda-linha { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #eee; }
